@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Distracted Driving Identification &amp; Mitigation — Illinois State University</title>
+<meta name="description" content="An IRB-approved research study by Illinois State University, with the Town of Normal, testing roadside signs that reduce distracted driving in monitored zones.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#D81E2C;--red-deep:#A3121D;--red-tint:#FDECEC;
+  --yg:#93B300;--yg-tint:#F1F6DA;--amber:#F7A100;
+  --asphalt:#14181F;--night:#0F1319;
+  --bg:#FFFFFF;--alt:#F5F6F8;--surface:#FFFFFF;
+  --ink:#1A1A1F;--muted:#5C6570;--line:#E5E8EC;--safe:#2E9E6E;
+  --maxw:1120px;--pad:clamp(20px,5vw,64px);
+  --sans:'Archivo',system-ui,sans-serif;--serif:'Source Serif 4',Georgia,serif;
+}
+:root[data-theme="dark"]{--bg:#0F1319;--alt:#131922;--surface:#171E27;--ink:#EAEEF3;--muted:#9DA9B5;--line:#28303A;--red-tint:#241416;--yg-tint:#1C2110}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1319;--alt:#131922;--surface:#171E27;--ink:#EAEEF3;--muted:#9DA9B5;--line:#28303A;--red-tint:#241416;--yg-tint:#1C2110}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,h4,.sans{font-family:var(--sans)}
+h2{font-size:clamp(1.7rem,3.4vw,2.5rem);font-weight:800;letter-spacing:-.02em;line-height:1.08;margin:0 0 .5em}
+h3{font-size:1.15rem;font-weight:700;letter-spacing:-.01em;margin:0 0 .35em}
+p{margin:0 0 1rem;max-width:66ch}
+a{color:inherit}
+.wrap{max-width:var(--maxw);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
+section{padding:clamp(56px,7.5vw,100px) 0;position:relative}
+.alt{background:var(--alt)}
+.dark{background:var(--night);color:#E9EEF3}
+.dark .muted{color:#AEB6BF}
+.dark h2,.dark h3{color:#fff}
+.dark::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.055) 1px,transparent 1.2px);background-size:16px 16px;pointer-events:none}
+.dark .wrap{position:relative}
+.eyebrow{font-family:var(--sans);font-weight:700;font-size:.78rem;letter-spacing:.06em;color:var(--red);display:inline-flex;align-items:center;gap:.5rem;margin-bottom:1rem;text-transform:uppercase}
+.eyebrow::before{content:"";width:22px;height:3px;background:var(--red);border-radius:2px}
+.dark .eyebrow{color:#FF6B76}.dark .eyebrow::before{background:#FF6B76}
+.lead{font-size:1.2rem}
+.muted{color:var(--muted)}
+.note{font-size:.94rem;color:var(--muted);margin-top:1rem}
+
+/* progress + nav */
+.progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--red);z-index:60;transition:width .12s linear}
+header.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:var(--maxw);margin:0 auto;padding:.7rem var(--pad);display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.brand{font-family:var(--sans);font-weight:800;letter-spacing:-.01em;font-size:1.02rem;text-decoration:none;display:flex;align-items:center;gap:.6rem}
+.brand .mk{width:40px;height:24px;border-radius:5px;background:var(--red);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.68rem;font-weight:900;letter-spacing:.03em}
+.nav-links{display:flex;gap:1.35rem;font-family:var(--sans);font-weight:500;font-size:.92rem}
+.nav-links a{text-decoration:none;color:var(--muted);padding:.2rem 0;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--ink);border-color:var(--red)}
+.nav-toggle{display:none;background:none;border:1px solid var(--line);border-radius:8px;color:var(--ink);font-family:var(--sans);font-weight:600;padding:.4rem .7rem;cursor:pointer}
+@media(max-width:880px){
+  /* Fixed (not absolute) so the dropdown never depends on the sticky header as a
+     containing block -- some mobile browsers position an absolute child of a sticky
+     element incorrectly, which made this menu open invisibly off-screen. */
+  .nav-links{position:fixed;top:var(--nav-h,58px);left:0;right:0;max-height:calc(100vh - var(--nav-h,58px));overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--surface);flex-direction:column;gap:0;padding:.4rem var(--pad) 1rem;border-bottom:1px solid var(--line);display:none;z-index:49}
+  .nav-links.open{display:flex}.nav-links a{padding:.7rem 0;border-bottom:1px solid var(--line)}
+  .nav-toggle{display:block;position:relative;z-index:51}
+}
+
+/* hero */
+.hero{background:var(--night);color:#E9EEF3;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(900px 380px at 10% 0%,rgba(216,30,44,.22),transparent 60%);pointer-events:none}
+.hero .wrap{padding-top:clamp(40px,6vw,72px);padding-bottom:clamp(40px,6vw,72px);position:relative;z-index:1}
+.hero-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:clamp(24px,4vw,56px);align-items:center}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr}}
+.hero h1{font-weight:900;letter-spacing:-.025em;line-height:1.02;font-size:clamp(2.2rem,5.4vw,3.8rem);margin:.2em 0 .35em;max-width:14ch;color:#fff}
+.hero-sub{font-size:1.15rem;color:#C4CBD3;max-width:52ch;margin-bottom:1.5rem}
+.lockup{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;margin-bottom:.5rem}
+.plate{font-family:var(--sans);font-weight:700;font-size:.88rem;border:1.5px solid var(--red);color:#fff;border-radius:8px;padding:.4rem .8rem;background:rgba(216,30,44,.22)}
+.lockup .x{font-family:var(--sans);font-weight:800;color:#8A93A0}
+.lockup-sub{font-family:var(--sans);font-size:.88rem;color:#AEB6BF;margin-bottom:1.2rem}
+.irb-badge{display:inline-flex;align-items:center;gap:.55rem;font-family:var(--sans);font-weight:600;font-size:.8rem;color:#E9EEF3;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:.35rem .85rem;background:rgba(255,255,255,.05)}
+.irb-badge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--safe);box-shadow:0 0 8px var(--safe)}
+.scene{width:100%;height:auto;border-radius:18px;box-shadow:0 30px 70px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.06);display:block}
+.scene-cap{font-family:var(--sans);font-size:.8rem;color:#8A93A0;margin-top:.7rem;text-align:center}
+.sign-stage{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.led-sign{background:#05070A;border-radius:18px;padding:28px 22px 24px;box-shadow:0 22px 50px rgba(0,0,0,.4),inset 0 0 0 2px #23262B,inset 0 0 40px rgba(0,0,0,.9);border:7px solid #2b2f36;position:relative;max-width:420px;width:100%}
+.led-sign::before{content:"";position:absolute;inset:13px;border:1px solid rgba(247,161,0,.14);border-radius:9px;pointer-events:none}
+.led-screen{position:relative;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.5) 3px 4px),repeating-linear-gradient(90deg,transparent 0 3px,rgba(0,0,0,.5) 3px 4px);border-radius:7px;padding:24px 12px;text-align:center}
+.led-text{font-family:var(--sans);font-weight:900;letter-spacing:.06em;line-height:1.05;color:var(--amber);text-shadow:0 0 8px rgba(247,161,0,.9),0 0 20px rgba(247,161,0,.55),0 0 38px rgba(247,161,0,.35);font-size:clamp(2rem,6vw,3.1rem)}
+.led-text span{display:block}
+.led-sub{font-family:var(--sans);font-weight:700;color:#8a7d5e;letter-spacing:.3em;font-size:.68rem;margin-top:14px}
+.led-glow{animation:flick 5s ease-in-out infinite}
+@keyframes flick{0%,92%,100%{opacity:1}94%{opacity:.74}96%{opacity:1}97%{opacity:.86}}
+.led-post{width:14px;height:38px;background:linear-gradient(#3a3f47,#20242b);margin:0 auto;border-radius:0 0 4px 4px}
+.sign-cap{font-family:var(--sans);font-size:.82rem;color:#8A93A0;text-align:center;margin-top:14px}
+@media (prefers-reduced-motion:reduce){.led-glow{animation:none}}
+.hero-entry{opacity:0;transform:translateY(16px);animation:rise .9s cubic-bezier(.2,.7,.2,1) forwards}
+.hero-entry.d1{animation-delay:.08s}.hero-entry.d2{animation-delay:.2s}.hero-entry.d3{animation-delay:.34s}.hero-entry.d4{animation-delay:.48s}.hero-entry.d5{animation-delay:.62s}
+@keyframes rise{to{opacity:1;transform:none}}
+
+/* scene animations */
+.lane{animation:lane 1s linear infinite}
+@keyframes lane{to{stroke-dashoffset:-42}}
+.ledpulse{animation:ledp 4s ease-in-out infinite}
+@keyframes ledp{0%,100%{opacity:1}50%{opacity:.78}88%{opacity:1}91%{opacity:.6}93%{opacity:1}}
+.blink{animation:blink 1.6s steps(1) infinite}
+@keyframes blink{0%,60%{opacity:1}61%,100%{opacity:.15}}
+.car{transform-box:fill-box;transform-origin:50% 50%;animation:drive 8s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes drive{0%{transform:translateY(0);opacity:0}6%{opacity:1}85%{transform:translateY(-172px);opacity:1}100%{transform:translateY(-172px);opacity:0}}
+/* demo */
+.demo{width:100%;height:auto;display:block}
+.lane2{animation:lane2 .9s linear infinite}
+@keyframes lane2{to{stroke-dashoffset:-48}}
+.dcar{animation:dcar 8s linear infinite}
+@keyframes dcar{0%{transform:translateX(-150px)}100%{transform:translateX(790px)}}
+.cone{animation:cone 8s linear infinite}
+@keyframes cone{0%,28%{fill-opacity:.12}33%,40%{fill-opacity:.55}45%,100%{fill-opacity:.12}}
+.signtxt{animation:signon 8s linear infinite}
+@keyframes signon{0%,33%{opacity:.08}38%,86%{opacity:1}92%,100%{opacity:.08}}
+.dblink{animation:blink 1.2s steps(1) infinite}
+.phone{animation:ph 1.4s ease-in-out infinite}
+@keyframes ph{0%,100%{opacity:.55}50%{opacity:1}}
+.shine{animation:shine 4.5s ease-in-out infinite}
+@keyframes shine{0%,55%{transform:skewX(-22deg) translateX(0)}85%,100%{transform:skewX(-22deg) translateX(330px)}}
+.ssign{width:100%;max-width:230px;height:auto;display:block;margin:0 auto}
+
+/* reveals (JS only) */
+.js .rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--i,0)*70ms)}
+.js .in .rv,.js .rv.in{opacity:1;transform:none}
+.js .rv.l{transform:translateX(-24px)}
+.js .rv.s{transform:scale(.94)}
+@media (prefers-reduced-motion:reduce){
+  .js .rv{opacity:1;transform:none;transition:none}
+  .lane,.lane2,.ledpulse,.blink,.car,.dcar,.cone,.dblink,.phone,.shine,.hero-entry{animation:none!important;opacity:1;transform:none}
+  .signtxt{animation:none;opacity:1}
+  html{scroll-behavior:auto}
+}
+
+/* stat band */
+.statband{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:2.3rem;box-shadow:0 12px 30px rgba(20,24,31,.06)}
+@media(max-width:720px){.statband{grid-template-columns:1fr}}
+.statband .cell{background:var(--surface);padding:1.6rem 1.5rem;position:relative}
+.statband .cell::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--red)}
+.statband .big{font-family:var(--sans);font-weight:900;font-size:clamp(2.2rem,5vw,3.1rem);letter-spacing:-.02em;color:var(--ink);line-height:1;font-variant-numeric:tabular-nums}
+.statband .big .u{color:var(--red);font-size:.55em}
+.statband .lbl{color:var(--muted);font-size:.97rem;margin-top:.5rem;max-width:30ch}
+
+/* cards */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:2rem}
+@media(max-width:800px){.two{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:1.7rem;position:relative;transition:transform .25s ease,box-shadow .25s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(20,24,31,.10)}
+.dark .card{background:#161C25;border-color:#28303A}
+.dark .card:hover{box-shadow:0 16px 36px rgba(0,0,0,.45)}
+.card .kind{font-family:var(--sans);font-weight:700;font-size:.78rem;margin-bottom:.7rem;display:inline-flex;align-items:center;gap:.5rem;text-transform:uppercase;letter-spacing:.04em}
+.card.smart{border-top:4px solid var(--red)}.card.smart .kind{color:#FF6B76}
+.card.static{border-top:4px solid var(--yg)}.card.static .kind{color:#BFE04A}
+.spec{font-family:var(--sans);font-size:.82rem;color:var(--muted);margin-top:1rem;padding-top:.9rem;border-top:1px dashed var(--line)}
+.dark .spec{border-color:#2E3641}
+.demo-wrap{margin-top:2rem;border-radius:16px;overflow:hidden;border:1px solid #28303A;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.card.static .inner{display:grid;grid-template-columns:1fr 150px;gap:1rem;align-items:center}
+@media(max-width:560px){.card.static .inner{grid-template-columns:1fr}}
+.callout{margin-top:1.8rem;background:#161C25;border:1px solid #28303A;border-radius:16px;padding:1.4rem 1.6rem;display:flex;gap:1.2rem;align-items:flex-start;flex-wrap:wrap}
+.callout .clock{font-family:var(--sans);font-weight:800;color:var(--amber);font-size:1.05rem;white-space:nowrap;text-shadow:0 0 12px rgba(247,161,0,.5)}
+.callout p{margin:0;color:#C4CBD3;max-width:60ch}
+.compliance{margin-top:1.2rem;background:rgba(216,30,44,.12);border:1px solid rgba(216,30,44,.35);border-radius:14px;padding:1.1rem 1.4rem;font-size:.95rem;color:#E9EEF3}
+.compliance strong{font-family:var(--sans);color:#FF8A92}
+
+/* route strip */
+.route{margin-top:2.2rem;overflow-x:auto;padding:1.4rem .4rem .6rem}
+.route-inner{display:flex;align-items:flex-start;gap:0;min-width:760px;position:relative}
+.route-inner::before{content:"";position:absolute;left:5%;right:5%;top:22px;height:4px;background:linear-gradient(90deg,var(--line) 0 25%,var(--red) 25%);border-radius:2px}
+.node{flex:1;text-align:center;position:relative;padding:0 .3rem}
+.node .dot{width:48px;height:48px;border-radius:50%;margin:0 auto;display:grid;place-items:center;font-family:var(--sans);font-weight:900;font-size:.8rem;background:var(--surface);border:3px solid var(--line);color:var(--muted);position:relative;z-index:1;transition:transform .25s}
+.node:hover .dot{transform:scale(1.1)}
+.node.smart .dot{border-color:var(--red);color:var(--red)}
+.node.static .dot{border-color:var(--yg);color:#5a6f00}
+.node .nm{font-family:var(--sans);font-weight:700;font-size:.8rem;margin-top:.55rem}
+.node .ty{font-family:var(--sans);font-size:.7rem;color:var(--muted)}
+
+/* tables */
+.tablewrap{overflow-x:auto;margin-top:1.6rem;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:.9rem}
+.loc-table th,.loc-table td{text-align:left;padding:.8rem 1rem;border-bottom:1px solid var(--line);vertical-align:top}
+.loc-table thead th{background:var(--alt);font-weight:700;font-size:.74rem;letter-spacing:.04em;color:var(--muted);text-transform:uppercase}
+.loc-table tbody th{font-weight:900;color:var(--red);width:48px}
+.loc-table tbody tr{transition:background .2s}
+.loc-table tbody tr:hover{background:var(--alt)}
+.loc-table .loc strong{font-weight:700}
+.loc-table .loc .sub{display:block;color:var(--muted);font-size:.82rem;margin-top:.15rem}
+.loc-table tr:last-child td,.loc-table tr:last-child th{border-bottom:none}
+.tag{font-size:.72rem;font-weight:700;padding:.22rem .6rem .22rem .45rem;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap;font-family:var(--sans);display:inline-flex;align-items:center;gap:.35rem}
+.tag .ico{width:16px;height:16px}
+.tag-smart{color:#fff;background:var(--red);border-color:var(--red)}
+.tag-static{color:#2f3a00;background:var(--yg);border-color:var(--yg)}
+
+/* findings */
+.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:2.2rem}
+@media(max-width:900px){.data-grid{grid-template-columns:1fr}}
+.data-block{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:1.5rem}
+.data-block h3{margin-bottom:.15em}
+.data-block .cap{font-size:.88rem;color:var(--muted);margin-bottom:1.1rem}
+.heatmap{display:grid;grid-template-columns:auto repeat(8,1fr);gap:3px;font-family:var(--sans)}
+.hm-cell{display:grid;place-items:center;font-size:.72rem;font-weight:700;padding:.4rem .1rem;border-radius:3px;min-height:30px}
+.hm-col,.hm-row{color:var(--muted)}
+.hm-val{cursor:default;transition:transform .15s}
+.hm-val:hover{transform:scale(1.14);z-index:2;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.js .hm-val{opacity:0;transform:scale(.45);transition:opacity .45s ease,transform .45s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i)*22ms)}
+.js .in .hm-val{opacity:1;transform:none}
+.js .in .hm-val:hover{transform:scale(1.14);transition-delay:0s}
+.hm-legend{display:flex;align-items:center;gap:.6rem;margin-top:.9rem;font-family:var(--sans);font-size:.72rem;color:var(--muted)}
+.hm-bar{height:8px;flex:1;border-radius:99px;background:linear-gradient(90deg,#3b4cc0,#dddddd,#b40426)}
+.stat-table th,.stat-table td{padding:.5rem .6rem;text-align:right;border-bottom:1px solid var(--line);font-size:.85rem}
+.stat-table thead th{color:var(--muted);font-weight:700;font-size:.72rem;text-transform:uppercase}
+.stat-table tbody th{text-align:left;color:var(--red);font-weight:900}
+.stat-table tr:last-child td,.stat-table tr:last-child th{border-bottom:none}
+.stat-hl{background:var(--yg-tint);font-weight:800;border-radius:3px}
+.pull{margin-top:2rem;display:grid;grid-template-columns:auto 1fr;gap:1.2rem;align-items:center;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--red);border-radius:14px;padding:1.2rem 1.5rem}
+.pull .n{font-family:var(--sans);font-weight:900;font-size:2.2rem;color:var(--red);line-height:1}
+.pull p{margin:0;font-size:1rem}
+@media(max-width:560px){.pull{grid-template-columns:1fr}}
+
+/* privacy */
+.pledge{list-style:none;padding:0;margin:2rem 0 0;display:grid;gap:14px}
+.pledge li{display:flex;gap:1rem;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1.1rem 1.3rem}
+.pledge .ic{flex:none;width:28px;height:28px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font-weight:800;font-family:var(--sans);font-size:.9rem;transform:scale(.4);transition:transform .45s cubic-bezier(.3,1.4,.5,1);transition-delay:calc(var(--i,0)*70ms + .25s)}
+.in .pledge .ic{transform:none}
+.no-js .pledge .ic{transform:none}
+.pledge p{margin:0}.pledge strong{font-family:var(--sans)}
+
+/* timeline */
+.timeline{margin-top:2.6rem;position:relative;--tl-end:0px}
+.timeline::before{content:"";position:absolute;left:2px;top:2px;bottom:2px;width:4px;border-radius:3px;background:var(--line)}
+.timeline::after{content:"";position:absolute;left:2px;top:2px;bottom:2px;width:4px;border-radius:3px;background:var(--red);transform:scaleY(0);transform-origin:top;transition:transform 1.4s ease .1s}
+.in .timeline::after{transform:scaleY(1)}
+.tl-car{position:absolute;left:-8px;top:0;width:24px;height:32px;z-index:2;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3));transform:translateY(0px);transition:transform 1.4s ease .1s}
+.in .tl-car{transform:translateY(var(--tl-end))}
+.tl-car svg{display:block}
+.phase{position:relative;padding:0 0 2.1rem 2.2rem}
+.phase::before{content:"";position:absolute;left:-1px;top:9px;width:10px;height:10px;box-sizing:border-box;border-radius:50%;background:var(--surface);border:2px solid var(--line);transition:background .3s ease,border-color .3s ease;transition-delay:var(--dot-delay,0s)}
+.in .phase::before{background:var(--red);border-color:var(--red)}
+.phase:last-child{padding-bottom:0}
+.phase .when{font-family:var(--sans);font-weight:700;color:var(--red);font-size:.85rem}
+.phase .what{font-family:var(--sans);font-weight:600;font-size:1.05rem;margin-top:.15rem}
+@media (prefers-reduced-motion:reduce){.tl-car{display:none}.timeline::after,.phase::before{transition:none}}
+
+
+/* roles / partners */
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:2rem}
+@media(max-width:800px){.roles{grid-template-columns:1fr}}
+.roles ul{margin:.6rem 0 0;padding-left:1.1rem}.roles li{margin-bottom:.55rem;padding-left:.2rem}
+.orgs{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:2rem}
+.org{flex:0 1 300px}
+.org{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1.1rem 1.25rem;border-left:4px solid var(--red);transition:transform .25s}
+.org:hover{transform:translateY(-3px)}
+.org .nm{font-family:var(--sans);font-weight:700;font-size:1rem}
+.org .rl{font-size:.88rem;color:var(--muted);margin-top:.15rem}
+
+/* compact contacts */
+.contact-strip{display:flex;flex-wrap:wrap;gap:1rem 2.4rem;align-items:flex-start;margin-top:1.4rem;padding:1.3rem 1.5rem;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.contact-strip .cx{min-width:220px}
+.contact-strip .nm{font-family:var(--sans);font-weight:700;font-size:.98rem}
+.contact-strip .rl{font-size:.84rem;color:var(--muted);margin:.1rem 0 .25rem}
+.contact-strip a{font-family:var(--sans);font-weight:600;font-size:.9rem;text-decoration:none;color:var(--red);border-bottom:1px solid color-mix(in srgb,var(--red) 40%,transparent)}
+.contact-strip a:hover{border-color:var(--red)}
+
+footer{background:var(--asphalt);color:#AEB6BF;font-size:.9rem;position:relative}
+footer::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:repeating-linear-gradient(90deg,var(--amber) 0 40px,transparent 40px 80px);opacity:.7}
+footer .wrap{padding-top:2.8rem;padding-bottom:2.8rem}
+footer .ft-title{font-family:var(--sans);font-weight:800;color:#fff;font-size:1.02rem;letter-spacing:-.01em;margin-bottom:.5rem}
+footer .disc{max-width:72ch;margin-top:.9rem;line-height:1.6}
+</style>
+</head>
+<body class="no-js">
+<script>document.body.classList.remove('no-js');document.documentElement.classList.add('js');</script>
+<div class="progress" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top"><span class="mk">ISU</span> Phones Down Study</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="navlinks">Menu</button>
+    <nav class="nav-links" id="navlinks">
+      <a href="#overview">Overview</a><a href="#how">Signs</a><a href="#locations">Locations</a><a href="#findings">Findings</a><a href="#privacy">Privacy</a><a href="#timeline">Timeline</a><a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<a id="top"></a>
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow hero-entry">A road-safety research study · Normal, Illinois</span>
+        <h1 class="hero-entry d1">Distracted Driving Identification and Mitigation</h1>
+        <p class="hero-sub hero-entry d2">Testing roadside signs that prompt drivers to put their phones down in monitored zones — during drop-off and pick-up, when children and families are closest to the road.</p>
+        <div class="lockup hero-entry d3"><span class="plate">Illinois State University</span></div>
+        <div class="lockup-sub hero-entry d4">with the Town of Normal and McLean County Unit District No. 5</div>
+        <span class="irb-badge hero-entry d5">Approved by ISU IRB · IRB-2026-238</span>
+      </div>
+      <div class="hero-entry d2">
+        <div class="sign-stage">
+          <div class="led-sign">
+            <div class="led-screen">
+              <div class="led-text led-glow"><span>PHONES</span><span>DOWN</span></div>
+              <div class="led-sub">SCHOOL ZONE · SLOW DOWN</div>
+            </div>
+          </div>
+          <div class="led-post"></div>
+        </div>
+        <div class="scene-cap">The message a driver sees at a study site</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="overview">
+  <div class="wrap">
+    <span class="eyebrow rv">Overview</span>
+    <h2 class="rv">Small signs, aimed at the riskiest minutes of the day</h2>
+    <p class="lead rv">Every school morning and afternoon, traffic surges around Normal's schools. Our preliminary study found that distracted driving — handheld phone use and hard braking — climbs sharply during these windows, exactly when families and children are near the road.</p>
+    <p class="rv">This project tests whether simple roadside signs can change that behavior. Illinois State University is comparing two evidence-based approaches — a real-time smart sign and an always-on static sign — to learn which is the most effective, scalable, and practical way to keep monitored zones safer.</p>
+    <div class="statband rv s">
+      <div class="cell"><div class="big"><span data-count="20" data-dec="0">0</span><span class="u">×</span></div><div class="lbl">higher distracted-driving risk at every study site during drop-off and pick-up, versus the town overall.</div></div>
+      <div class="cell"><div class="big"><span data-count="0.9375" data-dec="4">0.0000</span></div><div class="lbl">town-wide distracted-driving risk index measured across Normal in the preliminary study.</div></div>
+      <div class="cell"><div class="big"><span data-count="8" data-dec="0">0</span></div><div class="lbl">monitored zones studied across Normal, each beside a Unit&nbsp;5 elementary school.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="how" class="dark">
+  <div class="wrap">
+    <span class="eyebrow rv">How the signs work</span>
+    <h2 class="rv">Two kinds of signs, one message</h2>
+    <p class="rv muted">Both approaches deliver the same words — <strong style="color:#fff">PHONES DOWN</strong> — but they get there differently. Comparing them shows which is worth scaling to more monitored zones. Every sign is designed to meet Federal MUTCD standards.</p>
+    <div class="demo-wrap rv s">
+<svg class="demo" viewBox="0 0 760 250" role="img" aria-label="Animated demo: a detector spots a driver holding a phone and the downstream sign lights up PHONES DOWN">
+<defs>
+  <filter id="dg" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="dg2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <pattern id="ddots" width="4" height="4" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.05" fill="#000" fill-opacity=".62"/></pattern>
+  <linearGradient id="road2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#262C35"/><stop offset="1" stop-color="#1C2129"/></linearGradient>
+  <linearGradient id="carbody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E7EBEE"/><stop offset="1" stop-color="#AFB9C3"/></linearGradient>
+</defs>
+<rect x="0" y="0" width="760" height="250" rx="14" fill="#0B0F15"/>
+<rect x="0" y="150" width="760" height="56" fill="url(#road2)"/>
+<line class="lane2" x1="0" y1="178" x2="760" y2="178" stroke="#E8C547" stroke-width="3" stroke-dasharray="26 22"/>
+<rect x="0" y="206" width="760" height="4" fill="#3A414B"/>
+<!-- detector -->
+<g transform="translate(160,60)">
+  <polygon class="cone" points="30,22 160,150 40,150" fill="#FF3B3B" fill-opacity=".14"/>
+  <rect x="14" y="26" width="6" height="124" fill="#5E6672"/>
+  <rect x="0" y="8" width="34" height="22" rx="4" fill="#2E343D" stroke="#4a525c" stroke-width="1.5"/>
+  <circle cx="24" cy="19" r="5" fill="#1b1f26" stroke="#7f8792" stroke-width="1.2"/>
+  <circle class="dblink" cx="9" cy="19" r="2.8" fill="#FF3B3B" filter="url(#dg2)"/>
+</g>
+<!-- sign -->
+<g transform="translate(520,26)">
+  <rect x="82" y="94" width="8" height="58" fill="#5E6672"/>
+  <rect x="0" y="0" width="172" height="96" rx="8" fill="#05070A" stroke="#2b2f36" stroke-width="5"/>
+  <rect x="10" y="10" width="152" height="76" rx="4" fill="#0A0D12"/>
+  <rect x="10" y="10" width="152" height="76" rx="4" fill="url(#ddots)"/>
+  <text class="signtxt" x="86" y="41" text-anchor="middle" font-family="Archivo,system-ui,sans-serif" font-weight="900" font-size="20" letter-spacing="1" fill="#F7A100" filter="url(#dg)">PHONES</text>
+  <text class="signtxt" x="86" y="68" text-anchor="middle" font-family="Archivo,system-ui,sans-serif" font-weight="900" font-size="20" letter-spacing="1" fill="#F7A100" filter="url(#dg)">DOWN</text>
+</g>
+<!-- car (side view), driving left-to-right — body silhouette is mirrored so the rounded nose leads on the right (matching travel direction); lights/wheels placed directly in their correct final positions -->
+<g class="dcar">
+  <ellipse cx="70" cy="167" rx="72" ry="6" fill="#000" opacity=".28"/>
+  <g transform="translate(140,0) scale(-1,1)">
+    <path d="M4 150 C1 150 0 146 1 141 L5 127 C7 118 14 112 24 111 L34 111 C40 98 52 90 66 90 L86 90 C98 90 108 96 116 106 L128 120 C134 122 138 128 138 136 L138 148 C138 153 135 156 130 156 L10 156 C6 156 4 154 4 150 Z" fill="#D6262F" stroke="#87101A" stroke-width="1.5"/>
+    <path d="M40 108 C45 99 54 94 65 94 L84 94 C93 94 100 98 106 106 L114 118 L36 118 Z" fill="#20242B"/>
+    <rect x="73" y="94" width="4" height="24" fill="#87101A"/>
+    <line x1="90" y1="90" x2="96" y2="72" stroke="#2A2E33" stroke-width="2" stroke-linecap="round"/>
+    <path d="M38 108 L30 106 L31 113 L40 113 Z" fill="#87101A"/>
+    <rect class="phone" x="53" y="102" width="7" height="11" rx="1.5" fill="#6EC8FF" filter="url(#dg2)"/>
+  </g>
+  <rect x="60" y="132" width="14" height="4" rx="2" fill="#F0B9BC"/>
+  <circle cx="12" cy="132" r="6" fill="#7A0A10"/><circle cx="12" cy="132" r="3.2" fill="#FF4B52"/>
+  <path d="M130 128 L138 132 L138 142 L128 140 Z" fill="#FFE9A8"/>
+  <circle cx="28" cy="158" r="13" fill="#14181F"/><circle cx="28" cy="158" r="6" fill="#5A636D"/><circle cx="28" cy="158" r="2.2" fill="#AEB6BF"/>
+  <circle cx="112" cy="158" r="13" fill="#14181F"/><circle cx="112" cy="158" r="6" fill="#5A636D"/><circle cx="112" cy="158" r="2.2" fill="#AEB6BF"/>
+</g>
+<g font-family="Archivo,system-ui,sans-serif" font-size="13" font-weight="600" fill="#AEB6BF">
+  <text x="176" y="236">1 &nbsp;Detector spots a handheld phone</text>
+  <text x="520" y="236">2 &nbsp;Sign lights up in real time</text>
+</g>
+</svg></div>
+    <div class="two">
+      <div class="card smart rv" style="--i:0">
+        <div class="kind">Smart sign · real-time</div>
+        <h3>A sign that responds the moment it matters</h3>
+        <p class="muted">A camera-and-infrared roadside detector spots a driver holding a phone, then triggers a downstream message sign that lights up <strong style="color:#fff">PHONES DOWN</strong> only in that moment — exactly what the animation above shows.</p>
+        <div class="spec">Dual-component detector + blank-out message sign &nbsp;·&nbsp; Sites S5, S6, S7</div>
+      </div>
+      <div class="card static rv" style="--i:1">
+        <div class="kind">Static sign · always on</div>
+        <div class="inner">
+          <div>
+            <h3>A clear message drivers always see</h3>
+            <p class="muted">A reflective, fluorescent yellow-green aluminum sign flanks the school crosswalk with a constant safety message. It is the most cost-effective and fully compliant option.</p>
+          </div>
+          
+<svg class="ssign" viewBox="0 0 220 180" role="img" aria-label="A fluorescent yellow-green reflective sign reading PHONES DOWN">
+<defs><clipPath id="sc"><rect x="34" y="14" width="152" height="112" rx="10"/></clipPath></defs>
+<rect x="106" y="126" width="8" height="54" fill="#5E6672"/>
+<rect x="34" y="14" width="152" height="112" rx="10" fill="#A6C700" stroke="#10140A" stroke-width="5"/>
+<rect x="46" y="26" width="128" height="88" rx="6" fill="none" stroke="#10140A" stroke-width="2.5"/>
+<text x="110" y="62" text-anchor="middle" font-family="Archivo,system-ui,sans-serif" font-weight="900" font-size="24" fill="#10140A">PHONES</text>
+<text x="110" y="96" text-anchor="middle" font-family="Archivo,system-ui,sans-serif" font-weight="900" font-size="24" fill="#10140A">DOWN</text>
+<g clip-path="url(#sc)"><rect class="shine" x="-80" y="0" width="46" height="180" fill="#fff" fill-opacity=".38" transform="skewX(-22)"/></g>
+</svg>
+        </div>
+        <div class="spec">Reflective aluminum &nbsp;·&nbsp; min 24″ × 30″ &nbsp;·&nbsp; MUTCD R16-15 &nbsp;·&nbsp; Sites S3, S4, S8</div>
+      </div>
+    </div>
+    <div class="callout rv">
+      <div class="clock">7:20–7:50 AM &nbsp;·&nbsp; 2:20–2:50 PM</div>
+      <p>Signs are active only during these arrival and dismissal windows, for about three months. ISU student observers are sometimes present on foot to record driving behavior using a strict, safe protocol.</p>
+    </div>
+    <div class="compliance rv"><strong>Placement:</strong> Signs sit roughly 150–300 ft ahead of each monitored-zone entrance or main crosswalk, so drivers have time to see the message and respond. Final locations are set with Town of Normal engineering staff under MUTCD sight-distance rules.</div>
+  </div>
+</section>
+
+<section id="locations">
+  <div class="wrap">
+    <span class="eyebrow rv">Locations</span>
+    <h2 class="rv">Where the study takes place</h2>
+    <p class="rv">Eight street segments across Normal were flagged in the preliminary study for repeated distracted driving during predictable traffic surges. Signs go up at six of them, each beside a Unit&nbsp;5 elementary school.</p>
+    <div class="route rv"><div class="route-inner">
+  <div class="node prelim" style="--i:0">
+    <div class="dot">S1</div>
+    <div class="nm">Colene Hoose</div>
+    <div class="ty">Preliminary</div>
+  </div>
+  <div class="node prelim" style="--i:1">
+    <div class="dot">S2</div>
+    <div class="nm">Fairview</div>
+    <div class="ty">Preliminary</div>
+  </div>
+  <div class="node static" style="--i:2">
+    <div class="dot">S3</div>
+    <div class="nm">Glenn</div>
+    <div class="ty">Static sign</div>
+  </div>
+  <div class="node static" style="--i:3">
+    <div class="dot">S4</div>
+    <div class="nm">Grove</div>
+    <div class="ty">Static sign</div>
+  </div>
+  <div class="node smart" style="--i:4">
+    <div class="dot">S5</div>
+    <div class="nm">Oakdale</div>
+    <div class="ty">Smart sign</div>
+  </div>
+  <div class="node smart" style="--i:5">
+    <div class="dot">S6</div>
+    <div class="nm">Parkside</div>
+    <div class="ty">Smart sign</div>
+  </div>
+  <div class="node smart" style="--i:6">
+    <div class="dot">S7</div>
+    <div class="nm">Prairieland</div>
+    <div class="ty">Smart sign</div>
+  </div>
+  <div class="node static" style="--i:7">
+    <div class="dot">S8</div>
+    <div class="nm">Sugar Creek</div>
+    <div class="ty">Static sign</div>
+  </div></div></div>
+    <div class="tablewrap">
+      <table class="loc-table">
+        <thead><tr><th>Site</th><th>Nearby school</th><th>Location</th><th>Sign</th></tr></thead>
+        <tbody><tr class="rv" style="--i:0"><th scope="row">S1</th><td>Colene Hoose</td><td class="loc"><span class="sub">Grandview Drive & Vernon Avenue / Sheridan Road</span></td><td><span class="tag">Preliminary</span></td></tr><tr class="rv" style="--i:1"><th scope="row">S2</th><td>Fairview</td><td class="loc"><span class="sub">Fairview Street & Linden Street / North Main Street</span></td><td><span class="tag">Preliminary</span></td></tr><tr class="rv" style="--i:2"><th scope="row">S3</th><td>Glenn</td><td class="loc"><strong>306 Glenn Ave, Normal, IL 61761</strong><span class="sub">Glenn Avenue & North School Street</span></td><td><span class="tag tag-static"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="2" width="14" height="11" rx="2" fill="#A6C700" stroke="#1a1f0a" stroke-width="1.4"/><rect x="9.2" y="13" width="1.6" height="6" fill="#6B7480"/></svg>Static sign</span></td></tr><tr class="rv" style="--i:3"><th scope="row">S4</th><td>Grove</td><td class="loc"><strong>1101 Airport Rd, Normal, IL 61761</strong><span class="sub">North Airport Road & Fort Jesse Road / G.E. Road</span></td><td><span class="tag tag-static"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="2" width="14" height="11" rx="2" fill="#A6C700" stroke="#1a1f0a" stroke-width="1.4"/><rect x="9.2" y="13" width="1.6" height="6" fill="#6B7480"/></svg>Static sign</span></td></tr><tr class="rv" style="--i:4"><th scope="row">S5</th><td>Oakdale</td><td class="loc"><strong>601 S Adelaide St, Normal, IL 61761</strong><span class="sub">South Adelaide Street & West Taylor Street / West Hovey Avenue</span></td><td><span class="tag tag-smart"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="16" height="11" rx="2" fill="#05070A" stroke="#3a3f47" stroke-width="1.4"/><rect x="5" y="5" width="10" height="2" fill="#F7A100"/><rect x="6.5" y="8.5" width="7" height="2" fill="#F7A100"/><rect x="9.2" y="13" width="1.6" height="6" fill="#6B7480"/></svg>Smart sign</span></td></tr><tr class="rv" style="--i:5"><th scope="row">S6</th><td>Parkside</td><td class="loc"><strong>1900 W College Ave, Normal, IL 61761</strong><span class="sub">West College Avenue & North Parkside Road</span></td><td><span class="tag tag-smart"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="16" height="11" rx="2" fill="#05070A" stroke="#3a3f47" stroke-width="1.4"/><rect x="5" y="5" width="10" height="2" fill="#F7A100"/><rect x="6.5" y="8.5" width="7" height="2" fill="#F7A100"/><rect x="9.2" y="13" width="1.6" height="6" fill="#6B7480"/></svg>Smart sign</span></td></tr><tr class="rv" style="--i:6"><th scope="row">S7</th><td>Prairieland</td><td class="loc"><strong>1300 E Raab Rd, Normal, IL 61761</strong><span class="sub">East Raab Road & Landmark Drive / North Airport Road</span></td><td><span class="tag tag-smart"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="16" height="11" rx="2" fill="#05070A" stroke="#3a3f47" stroke-width="1.4"/><rect x="5" y="5" width="10" height="2" fill="#F7A100"/><rect x="6.5" y="8.5" width="7" height="2" fill="#F7A100"/><rect x="9.2" y="13" width="1.6" height="6" fill="#6B7480"/></svg>Smart sign</span></td></tr><tr class="rv" style="--i:7"><th scope="row">S8</th><td>Sugar Creek</td><td class="loc"><strong>200 N Towanda Ave, Normal, IL 61761</strong><span class="sub">North Towanda Avenue & Jersey Avenue</span></td><td><span class="tag tag-static"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="2" width="14" height="11" rx="2" fill="#A6C700" stroke="#1a1f0a" stroke-width="1.4"/><rect x="9.2" y="13" width="1.6" height="6" fill="#6B7480"/></svg>Static sign</span></td></tr></tbody>
+      </table>
+    </div>
+    <p class="note rv">Sites S1 and S2 were part of the preliminary observation study. Signs are installed at S3–S8.</p>
+  </div>
+</section>
+
+<section id="findings" class="alt">
+  <div class="wrap">
+    <span class="eyebrow rv">What we found</span>
+    <h2 class="rv">The preliminary evidence</h2>
+    <p class="lead rv">We measured a <strong>Distracted Driving Risk Index (DDRI)</strong> at each site across the school week. Higher numbers mean more distracted behavior. Hover any cell for details.</p>
+    <div class="data-grid">
+      <div class="data-block rv" style="--i:0"><h3>Mornings — drop-off</h3><div class="cap">DDRI by monitored zone and weekday, 7:20–7:50 AM</div><div class="heatmap"><div class="hm-cell hm-corner"></div><div class="hm-cell hm-col">S1</div><div class="hm-cell hm-col">S2</div><div class="hm-cell hm-col">S3</div><div class="hm-cell hm-col">S4</div><div class="hm-cell hm-col">S5</div><div class="hm-cell hm-col">S6</div><div class="hm-cell hm-col">S7</div><div class="hm-cell hm-col">S8</div><div class="hm-cell hm-row">Mon</div><div class="hm-cell hm-val" style="--i:0;background:#8f97cf;color:#14181F" title="Monday morning, S1: DDRI 29.8">29.8</div><div class="hm-cell hm-val" style="--i:1;background:#6d79c9;color:#fff" title="Monday morning, S2: DDRI 23.9">23.9</div><div class="hm-cell hm-val" style="--i:2;background:#969dd0;color:#14181F" title="Monday morning, S3: DDRI 31.0">31.0</div><div class="hm-cell hm-val" style="--i:3;background:#caccda;color:#14181F" title="Monday morning, S4: DDRI 40.0">40.0</div><div class="hm-cell hm-val" style="--i:4;background:#a9afd4;color:#14181F" title="Monday morning, S5: DDRI 34.3">34.3</div><div class="hm-cell hm-val" style="--i:5;background:#b40426;color:#fff" title="Monday morning, S6: DDRI 71.2">71.2</div><div class="hm-cell hm-val" style="--i:6;background:#d1d2db;color:#14181F" title="Monday morning, S7: DDRI 41.1">41.1</div><div class="hm-cell hm-val" style="--i:7;background:#5967c5;color:#fff" title="Monday morning, S8: DDRI 20.5">20.5</div><div class="hm-cell hm-row">Tue</div><div class="hm-cell hm-val" style="--i:8;background:#c2c5d8;color:#14181F" title="Tuesday morning, S1: DDRI 38.6">38.6</div><div class="hm-cell hm-val" style="--i:9;background:#727dca;color:#fff" title="Tuesday morning, S2: DDRI 24.8">24.8</div><div class="hm-cell hm-val" style="--i:10;background:#a0a7d2;color:#14181F" title="Tuesday morning, S3: DDRI 32.8">32.8</div><div class="hm-cell hm-val" style="--i:11;background:#a7acd3;color:#14181F" title="Tuesday morning, S4: DDRI 33.9">33.9</div><div class="hm-cell hm-val" style="--i:12;background:#737eca;color:#fff" title="Tuesday morning, S5: DDRI 25.0">25.0</div><div class="hm-cell hm-val" style="--i:13;background:#dddddd;color:#14181F" title="Tuesday morning, S6: DDRI 43.3">43.3</div><div class="hm-cell hm-val" style="--i:14;background:#a0a7d2;color:#14181F" title="Tuesday morning, S7: DDRI 32.8">32.8</div><div class="hm-cell hm-val" style="--i:15;background:#505fc4;color:#fff" title="Tuesday morning, S8: DDRI 18.9">18.9</div><div class="hm-cell hm-row">Wed</div><div class="hm-cell hm-val" style="--i:16;background:#b4b8d6;color:#14181F" title="Wednesday morning, S1: DDRI 36.2">36.2</div><div class="hm-cell hm-val" style="--i:17;background:#818bcd;color:#fff" title="Wednesday morning, S2: DDRI 27.4">27.4</div><div class="hm-cell hm-val" style="--i:18;background:#9ba2d1;color:#14181F" title="Wednesday morning, S3: DDRI 31.8">31.8</div><div class="hm-cell hm-val" style="--i:19;background:#a7add3;color:#14181F" title="Wednesday morning, S4: DDRI 34.0">34.0</div><div class="hm-cell hm-val" style="--i:20;background:#7681cb;color:#fff" title="Wednesday morning, S5: DDRI 25.5">25.5</div><div class="hm-cell hm-val" style="--i:21;background:#626fc7;color:#fff" title="Wednesday morning, S6: DDRI 22.0">22.0</div><div class="hm-cell hm-val" style="--i:22;background:#7f89cc;color:#fff" title="Wednesday morning, S7: DDRI 27.1">27.1</div><div class="hm-cell hm-val" style="--i:23;background:#3b4cc0;color:#fff" title="Wednesday morning, S8: DDRI 15.3">15.3</div><div class="hm-cell hm-row">Thu</div><div class="hm-cell hm-val" style="--i:24;background:#8d95cf;color:#fff" title="Thursday morning, S1: DDRI 29.4">29.4</div><div class="hm-cell hm-val" style="--i:25;background:#9ba2d1;color:#14181F" title="Thursday morning, S2: DDRI 31.8">31.8</div><div class="hm-cell hm-val" style="--i:26;background:#7a85cb;color:#fff" title="Thursday morning, S3: DDRI 26.2">26.2</div><div class="hm-cell hm-val" style="--i:27;background:#7a84cb;color:#fff" title="Thursday morning, S4: DDRI 26.1">26.1</div><div class="hm-cell hm-val" style="--i:28;background:#707bc9;color:#fff" title="Thursday morning, S5: DDRI 24.4">24.4</div><div class="hm-cell hm-val" style="--i:29;background:#a7add3;color:#14181F" title="Thursday morning, S6: DDRI 34.0">34.0</div><div class="hm-cell hm-val" style="--i:30;background:#7580ca;color:#fff" title="Thursday morning, S7: DDRI 25.3">25.3</div><div class="hm-cell hm-val" style="--i:31;background:#4151c1;color:#fff" title="Thursday morning, S8: DDRI 16.3">16.3</div><div class="hm-cell hm-row">Fri</div><div class="hm-cell hm-val" style="--i:32;background:#868fcd;color:#fff" title="Friday morning, S1: DDRI 28.3">28.3</div><div class="hm-cell hm-val" style="--i:33;background:#7681cb;color:#fff" title="Friday morning, S2: DDRI 25.5">25.5</div><div class="hm-cell hm-val" style="--i:34;background:#929ad0;color:#14181F" title="Friday morning, S3: DDRI 30.3">30.3</div><div class="hm-cell hm-val" style="--i:35;background:#8c95cf;color:#fff" title="Friday morning, S4: DDRI 29.3">29.3</div><div class="hm-cell hm-val" style="--i:36;background:#505fc4;color:#fff" title="Friday morning, S5: DDRI 19.0">19.0</div><div class="hm-cell hm-val" style="--i:37;background:#8b94ce;color:#fff" title="Friday morning, S6: DDRI 29.1">29.1</div><div class="hm-cell hm-val" style="--i:38;background:#5e6cc6;color:#fff" title="Friday morning, S7: DDRI 21.4">21.4</div><div class="hm-cell hm-val" style="--i:39;background:#737eca;color:#fff" title="Friday morning, S8: DDRI 24.9">24.9</div></div><div class="hm-legend"><span>Lower</span><div class="hm-bar"></div><span>Higher distraction</span></div></div>
+      <div class="data-block rv" style="--i:1"><h3>Afternoons — pick-up</h3><div class="cap">DDRI by monitored zone and weekday, 2:20–2:50 PM</div><div class="heatmap"><div class="hm-cell hm-corner"></div><div class="hm-cell hm-col">S1</div><div class="hm-cell hm-col">S2</div><div class="hm-cell hm-col">S3</div><div class="hm-cell hm-col">S4</div><div class="hm-cell hm-col">S5</div><div class="hm-cell hm-col">S6</div><div class="hm-cell hm-col">S7</div><div class="hm-cell hm-col">S8</div><div class="hm-cell hm-row">Mon</div><div class="hm-cell hm-val" style="--i:0;background:#727dca;color:#fff" title="Monday afternoon, S1: DDRI 19.3">19.3</div><div class="hm-cell hm-val" style="--i:1;background:#7d87cc;color:#fff" title="Monday afternoon, S2: DDRI 20.3">20.3</div><div class="hm-cell hm-val" style="--i:2;background:#bfc2d8;color:#14181F" title="Monday afternoon, S3: DDRI 26.2">26.2</div><div class="hm-cell hm-val" style="--i:3;background:#aeb3d5;color:#14181F" title="Monday afternoon, S4: DDRI 24.7">24.7</div><div class="hm-cell hm-val" style="--i:4;background:#d3abb3;color:#14181F" title="Monday afternoon, S5: DDRI 32.2">32.2</div><div class="hm-cell hm-val" style="--i:5;background:#727dca;color:#fff" title="Monday afternoon, S6: DDRI 19.3">19.3</div><div class="hm-cell hm-val" style="--i:6;background:#d2a0aa;color:#14181F" title="Monday afternoon, S7: DDRI 32.9">32.9</div><div class="hm-cell hm-val" style="--i:7;background:#c56073;color:#fff" title="Monday afternoon, S8: DDRI 37.2">37.2</div><div class="hm-cell hm-row">Tue</div><div class="hm-cell hm-val" style="--i:8;background:#d9c7cb;color:#14181F" title="Tuesday afternoon, S1: DDRI 30.3">30.3</div><div class="hm-cell hm-val" style="--i:9;background:#d5b5bb;color:#14181F" title="Tuesday afternoon, S2: DDRI 31.5">31.5</div><div class="hm-cell hm-val" style="--i:10;background:#d8c3c7;color:#14181F" title="Tuesday afternoon, S3: DDRI 30.6">30.6</div><div class="hm-cell hm-val" style="--i:11;background:#6773c8;color:#fff" title="Tuesday afternoon, S4: DDRI 18.3">18.3</div><div class="hm-cell hm-val" style="--i:12;background:#d8c1c6;color:#14181F" title="Tuesday afternoon, S5: DDRI 30.7">30.7</div><div class="hm-cell hm-val" style="--i:13;background:#7e88cc;color:#fff" title="Tuesday afternoon, S6: DDRI 20.4">20.4</div><div class="hm-cell hm-val" style="--i:14;background:#d4aeb5;color:#14181F" title="Tuesday afternoon, S7: DDRI 32.0">32.0</div><div class="hm-cell hm-val" style="--i:15;background:#bd314c;color:#fff" title="Tuesday afternoon, S8: DDRI 40.3">40.3</div><div class="hm-cell hm-row">Wed</div><div class="hm-cell hm-val" style="--i:16;background:#929ad0;color:#14181F" title="Wednesday afternoon, S1: DDRI 22.2">22.2</div><div class="hm-cell hm-val" style="--i:17;background:#c66175;color:#fff" title="Wednesday afternoon, S2: DDRI 37.1">37.1</div><div class="hm-cell hm-val" style="--i:18;background:#c66477;color:#fff" title="Wednesday afternoon, S3: DDRI 36.9">36.9</div><div class="hm-cell hm-val" style="--i:19;background:#969dd0;color:#14181F" title="Wednesday afternoon, S4: DDRI 22.5">22.5</div><div class="hm-cell hm-val" style="--i:20;background:#d19da7;color:#14181F" title="Wednesday afternoon, S5: DDRI 33.1">33.1</div><div class="hm-cell hm-val" style="--i:21;background:#d8c3c7;color:#14181F" title="Wednesday afternoon, S6: DDRI 30.6">30.6</div><div class="hm-cell hm-val" style="--i:22;background:#d5d5db;color:#14181F" title="Wednesday afternoon, S7: DDRI 28.1">28.1</div><div class="hm-cell hm-val" style="--i:23;background:#b40426;color:#fff" title="Wednesday afternoon, S8: DDRI 43.3">43.3</div><div class="hm-cell hm-row">Thu</div><div class="hm-cell hm-val" style="--i:24;background:#dddbdb;color:#14181F" title="Thursday afternoon, S1: DDRI 29.0">29.0</div><div class="hm-cell hm-val" style="--i:25;background:#c7c9d9;color:#14181F" title="Thursday afternoon, S2: DDRI 26.9">26.9</div><div class="hm-cell hm-val" style="--i:26;background:#6773c8;color:#fff" title="Thursday afternoon, S3: DDRI 18.3">18.3</div><div class="hm-cell hm-val" style="--i:27;background:#dcd8d9;color:#14181F" title="Thursday afternoon, S4: DDRI 29.2">29.2</div><div class="hm-cell hm-val" style="--i:28;background:#b3b7d5;color:#14181F" title="Thursday afternoon, S5: DDRI 25.1">25.1</div><div class="hm-cell hm-val" style="--i:29;background:#3b4cc0;color:#fff" title="Thursday afternoon, S6: DDRI 14.4">14.4</div><div class="hm-cell hm-val" style="--i:30;background:#6471c7;color:#fff" title="Thursday afternoon, S7: DDRI 18.1">18.1</div><div class="hm-cell hm-val" style="--i:31;background:#a0a6d2;color:#14181F" title="Thursday afternoon, S8: DDRI 23.4">23.4</div><div class="hm-cell hm-row">Fri</div><div class="hm-cell hm-val" style="--i:32;background:#8d95cf;color:#fff" title="Friday afternoon, S1: DDRI 21.7">21.7</div><div class="hm-cell hm-val" style="--i:33;background:#b2b6d5;color:#14181F" title="Friday afternoon, S2: DDRI 25.0">25.0</div><div class="hm-cell hm-val" style="--i:34;background:#626fc7;color:#fff" title="Friday afternoon, S3: DDRI 17.9">17.9</div><div class="hm-cell hm-val" style="--i:35;background:#b2b6d5;color:#14181F" title="Friday afternoon, S4: DDRI 25.0">25.0</div><div class="hm-cell hm-val" style="--i:36;background:#dbd0d2;color:#14181F" title="Friday afternoon, S5: DDRI 29.7">29.7</div><div class="hm-cell hm-val" style="--i:37;background:#858ecd;color:#fff" title="Friday afternoon, S6: DDRI 21.0">21.0</div><div class="hm-cell hm-val" style="--i:38;background:#9098cf;color:#14181F" title="Friday afternoon, S7: DDRI 22.0">22.0</div><div class="hm-cell hm-val" style="--i:39;background:#c4586d;color:#fff" title="Friday afternoon, S8: DDRI 37.7">37.7</div></div><div class="hm-legend"><span>Lower</span><div class="hm-bar"></div><span>Higher distraction</span></div></div>
+    </div>
+    <div class="pull rv"><div class="n">71.2</div><p>The single highest reading came at <strong>S6 (Parkside)</strong> on a Monday morning — nearly double the next-highest zone. Afternoons tell a different story, with <strong>S8 (Sugar Creek)</strong> running highest all week.</p></div>
+    <div class="data-grid">
+      <div class="data-block rv" style="--i:0"><h3>Morning drop-off — by the numbers</h3><div class="cap">Descriptive statistics of DDRI at each zone. Highlights mark the standout figures.</div><div class="tablewrap" style="border:none"><table class="stat-table"><thead><tr><th>Zone</th><th>Mean</th><th>Std&nbsp;Dev</th><th>Min</th><th>Max</th></tr></thead><tbody><tr><th scope="row">S1</th><td class="">32.46</td><td class="">4.61</td><td class="">28.25</td><td class="">38.61</td></tr><tr><th scope="row">S2</th><td class="">26.68</td><td class="">3.12</td><td class="">23.91</td><td class="">31.76</td></tr><tr><th scope="row">S3</th><td class="">30.42</td><td class="">2.55</td><td class="">26.17</td><td class="">32.82</td></tr><tr><th scope="row">S4</th><td class="">32.65</td><td class="">5.30</td><td class="">26.10</td><td class="">40.03</td></tr><tr><th scope="row">S5</th><td class="">25.65</td><td class="">5.50</td><td class="">19.01</td><td class="">34.31</td></tr><tr><th scope="row">S6</th><td class="stat-hl">39.92</td><td class="stat-hl">19.14</td><td class="stat-hl">21.98</td><td class="stat-hl">71.20</td></tr><tr><th scope="row">S7</th><td class="">29.54</td><td class="">7.65</td><td class="">21.40</td><td class="">41.11</td></tr><tr><th scope="row">S8</th><td class="">19.19</td><td class="">3.81</td><td class="">15.33</td><td class="">24.93</td></tr></tbody></table></div></div>
+      <div class="data-block rv" style="--i:1"><h3>Afternoon pick-up — by the numbers</h3><div class="cap">Descriptive statistics of DDRI at each zone. Highlights mark the standout figures.</div><div class="tablewrap" style="border:none"><table class="stat-table"><thead><tr><th>Zone</th><th>Mean</th><th>Std&nbsp;Dev</th><th>Min</th><th>Max</th></tr></thead><tbody><tr><th scope="row">S1</th><td class="">24.48</td><td class="">4.84</td><td class="">19.32</td><td class="">30.26</td></tr><tr><th scope="row">S2</th><td class="">28.16</td><td class="">6.40</td><td class="">20.30</td><td class="">37.06</td></tr><tr><th scope="row">S3</th><td class="">25.99</td><td class="stat-hl">8.15</td><td class="">17.88</td><td class="">36.95</td></tr><tr><th scope="row">S4</th><td class="">23.96</td><td class="">3.96</td><td class="">18.35</td><td class="">29.19</td></tr><tr><th scope="row">S5</th><td class="">30.16</td><td class="">3.14</td><td class="stat-hl">25.06</td><td class="">33.12</td></tr><tr><th scope="row">S6</th><td class="">21.13</td><td class="">5.91</td><td class="">14.40</td><td class="">30.64</td></tr><tr><th scope="row">S7</th><td class="">26.61</td><td class="">6.42</td><td class="">18.12</td><td class="">32.89</td></tr><tr><th scope="row">S8</th><td class="stat-hl">36.40</td><td class="">7.65</td><td class="">23.43</td><td class="stat-hl">43.32</td></tr></tbody></table></div></div>
+    </div>
+    <p class="note rv">Observers count two behavior types in each 30-minute window: <strong>A</strong> — phone-use activities, and <strong>B</strong> — distraction without a phone, such as eating, talking, or adjusting in-car controls.</p>
+  </div>
+</section>
+
+<section id="privacy">
+  <div class="wrap">
+    <span class="eyebrow rv">Privacy &amp; ethics</span>
+    <h2 class="rv">What we collect — and what we never will</h2>
+    <p class="lead rv">This study is built to protect the people it observes. It records patterns, not people.</p>
+    <ul class="pledge">
+      <li class="rv l" style="--i:0"><span class="ic">✓</span><p><strong>Only counts and percentages are recorded.</strong> No identifiable driver or student information is ever captured.</p></li>
+      <li class="rv l" style="--i:1"><span class="ic">✓</span><p><strong>Nothing is shared for enforcement.</strong> No individual data is shared with law enforcement or any outside organization.</p></li>
+      <li class="rv l" style="--i:2"><span class="ic">✓</span><p><strong>The only response is a sign.</strong> No citations and no penalties follow from observed behavior — the sole action is displaying <em>Phones Down</em>.</p></li>
+      <li class="rv l" style="--i:3"><span class="ic">✓</span><p><strong>ISU manages all the data.</strong> Data is collected, stored, and analyzed by Illinois State University alone.</p></li>
+      <li class="rv l" style="--i:4"><span class="ic">✓</span><p><strong>It follows established standards.</strong> The study meets ISU IRB requirements, IIHS ethical standards, and the NHTSA NOPUS observation protocol.</p></li>
+    </ul>
+  </div>
+</section>
+
+<section id="timeline" class="alt">
+  <div class="wrap">
+    <span class="eyebrow rv">Timeline</span>
+    <h2 class="rv">Project schedule (tentative)</h2>
+    <div class="timeline">
+      <div class="tl-car" aria-hidden="true"><svg viewBox="0 0 24 32" width="24" height="32"><defs><linearGradient id="tlcarbody" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F0424E"/><stop offset=".5" stop-color="#D81E2C"/><stop offset="1" stop-color="#A3121D"/></linearGradient></defs><ellipse cx="12" cy="30" rx="8.5" ry="1.8" fill="#000" opacity=".22"/><path d="M12 1 C17 1 20.5 4 20.5 10 L20.5 22 C20.5 27 17 30.5 12 30.5 C7 30.5 3.5 27 3.5 22 L3.5 10 C3.5 4 7 1 12 1 Z" fill="url(#tlcarbody)" stroke="#7A0F17" stroke-width=".6"/><rect x="1.3" y="10" width="2.6" height="3.2" rx="1" fill="#7A0F17"/><rect x="20.1" y="10" width="2.6" height="3.2" rx="1" fill="#7A0F17"/><rect x="10.6" y="2" width="2.8" height="27" fill="#fff" opacity=".85"/><path d="M7 6 C7 4.5 9 4 12 4 C15 4 17 4.5 17 6 L17 11 C17 12.5 15 13 12 13 C9 13 7 12.5 7 11 Z" fill="#1A1E24"/><path d="M7.5 26 C7.5 27.5 9 28 12 28 C15 28 16.5 27.5 16.5 26 L16.5 21 C16.5 19.5 15 19 12 19 C9 19 7.5 19.5 7.5 21 Z" fill="#1A1E24"/><rect x="9" y="20.3" width="3.6" height="3" rx="1" fill="#8FC5FF" opacity=".55"/><circle cx="7" cy="28.3" r="1.15" fill="#FFE9A8"/><circle cx="17" cy="28.3" r="1.15" fill="#FFE9A8"/><rect x="4.8" y="1.4" width="2.8" height="1.9" rx=".8" fill="#5A0509"/><rect x="16.4" y="1.4" width="2.8" height="1.9" rx=".8" fill="#5A0509"/></svg></div>
+      <div class="phase rv" style="--i:0"><div class="when">Spring – Summer 2026</div><div class="what">Field preparation and coordination</div></div>
+      <div class="phase rv" style="--i:1"><div class="when">Late Sept – early Oct 2026</div><div class="what">Sign intervention begins</div></div>
+      <div class="phase rv" style="--i:2"><div class="when">December 2026</div><div class="what">Data collection completed</div></div>
+      <div class="phase rv" style="--i:3"><div class="when">Early 2027</div><div class="what">Final reporting and recommendations</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="roles">
+  <div class="wrap">
+    <span class="eyebrow rv">Roles</span>
+    <h2 class="rv">Who does what</h2>
+    <div class="roles">
+      <div class="card rv" style="--i:0"><h3>What ISU will do</h3><ul><li>Procure, install, and manage the sign systems.</li><li>Train student observers in strict, safe, and unbiased protocols.</li><li>Analyze all data and prepare final reports with recommendations.</li><li>Share the results and findings with partners and the community.</li></ul></div>
+      <div class="card rv" style="--i:1"><h3>What we ask of schools</h3><ul><li>Help keep school operations staff informed of the observation schedule and procedures.</li><li>No direct involvement is required from teachers, students, or families — beyond any routine communications a school chooses to share.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section id="partners" class="alt">
+  <div class="wrap">
+    <span class="eyebrow rv">Partners</span>
+    <h2 class="rv">Who is involved</h2>
+    <p class="rv">University researchers, town government, local schools, and safety-technology providers.</p>
+    <div class="orgs">
+      <div class="org rv" style="--i:0"><div class="nm">Illinois State University</div><div class="rl">Research lead and data steward</div></div>
+      <div class="org rv" style="--i:1"><div class="nm">Town of Normal</div><div class="rl">Roadway and community partner</div></div>
+      <div class="org rv" style="--i:2"><div class="nm">McLean County Unit District No. 5</div><div class="rl">School-community partner</div></div>
+      <div class="org rv" style="--i:3"><div class="nm">Safer Street</div><div class="rl">Signage technology provider</div></div>
+      <div class="org rv" style="--i:4"><div class="nm">CMT / StreetVision</div><div class="rl">Signage technology provider</div></div>
+    </div>
+    <p class="note rv">Individual stakeholder contacts are listed only with each person's consent. Organizations are shown here to reflect the partnership.</p>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <span class="eyebrow rv">Contact</span>
+    <h2 class="rv">Questions about the study?</h2>
+    <p class="rv">Reach the research team at Illinois State University.</p>
+    <div class="contact-strip rv">
+      <div class="cx"><div class="nm">Dr. Haiyan Sally Xie, P.E.</div><div class="rl">Project Investigator &amp; Research Supervisor</div><a href="mailto:hxie@ilstu.edu">hxie@ilstu.edu</a></div>
+      <div class="cx"><div class="nm">Tej Kamal Davuluri</div><div class="rl">Graduate Research Assistant</div><a href="mailto:tdavulu@ilstu.edu">tdavulu@ilstu.edu</a></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="ft-title">Distracted Driving Identification and Mitigation</div>
+    <div>Illinois State University · Town of Normal</div>
+    <p class="disc">This site is informational and part of an IRB-approved research study (ISU IRB-2026-238). The study records only anonymized counts of driving behavior; no identifiable driver or student information is collected, and no data is shared with law enforcement or any outside organization.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var toggle=document.querySelector('.nav-toggle'),links=document.getElementById('navlinks');
+  if(toggle){toggle.addEventListener('click',function(){var o=links.classList.toggle('open');toggle.setAttribute('aria-expanded',o?'true':'false');});}
+  links&&links.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){links.classList.remove('open');toggle&&toggle.setAttribute('aria-expanded','false');});});
+
+  // Keep the mobile dropdown's fixed top pinned exactly to the header's real height
+  // (varies slightly with font loading), rather than a guessed constant.
+  var headerEl=document.querySelector('header.nav');
+  function setNavH(){if(headerEl)document.documentElement.style.setProperty('--nav-h',headerEl.offsetHeight+'px');}
+  setNavH();
+  window.addEventListener('resize',setNavH);
+  if('ResizeObserver' in window && headerEl){new ResizeObserver(setNavH).observe(headerEl);}
+
+  var bar=document.querySelector('.progress');
+  function prog(){var h=document.documentElement,s=h.scrollTop||document.body.scrollTop,m=h.scrollHeight-h.clientHeight;bar.style.width=(m>0?(s/m*100):0)+'%';}
+  window.addEventListener('scroll',prog,{passive:true});prog();
+
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var counters=new WeakMap();
+  function countUp(el){
+    var target=parseFloat(el.getAttribute('data-count')),dec=parseInt(el.getAttribute('data-dec')||'0',10);
+    if(reduce){el.textContent=target.toFixed(dec);return;}
+    var myRun=(counters.get(el)||0)+1;counters.set(el,myRun);
+    var dur=1200,start=null;
+    function f(t){
+      if(counters.get(el)!==myRun)return; // a newer run superseded this one
+      if(start===null)start=t;
+      var p=Math.min(1,(t-start)/dur),e=1-Math.pow(1-p,3);
+      el.textContent=(target*e).toFixed(dec);
+      if(p<1)requestAnimationFrame(f);
+    }
+    requestAnimationFrame(f);
+  }
+  function resetCount(el){
+    var dec=parseInt(el.getAttribute('data-dec')||'0',10);
+    counters.set(el,(counters.get(el)||0)+1); // invalidate any running animation
+    el.textContent=(0).toFixed(dec);
+  }
+  var nav=[].slice.call(document.querySelectorAll('.nav-links a'));
+  if('IntersectionObserver' in window){
+    var spy=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var id=e.target.getAttribute('id');nav.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+id);});}});},{rootMargin:'-45% 0px -50% 0px'});
+    [].slice.call(document.querySelectorAll('section[id]')).forEach(function(s){spy.observe(s);});
+
+    // Reveals replay every time: enter view -> animate in, leave view (either direction) -> reset, so scrolling
+    // back up reverses them and scrolling down to them again replays them.
+    var rev=new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.classList.add('in');
+          e.target.querySelectorAll('[data-count]').forEach(countUp);
+        } else {
+          e.target.classList.remove('in');
+          e.target.querySelectorAll('[data-count]').forEach(resetCount);
+        }
+      });
+    },{threshold:.15,rootMargin:'0px 0px -6% 0px'});
+    document.querySelectorAll('.rv, .data-block, .timeline, .pledge, .statband, .loc-table tbody').forEach(function(el){rev.observe(el);});
+    document.querySelectorAll('section').forEach(function(s){rev.observe(s);});
+  } else {
+    document.querySelectorAll('.rv').forEach(function(el){el.classList.add('in');});
+    document.querySelectorAll('[data-count]').forEach(countUp);
+  }
+
+  // Timeline: the car travels down the line in the same motion as the red line drawing --
+  // both triggered together by the same "in view" state, so they move as one unit and
+  // reverse together when scrolled away, instead of tracking scroll position separately.
+  var track=document.querySelector('.timeline'),tlCar=document.querySelector('.tl-car');
+  if(track&&tlCar){
+    var phases=[].slice.call(track.querySelectorAll('.phase'));
+    function layout(){
+      var total=track.offsetHeight||1;
+      track.style.setProperty('--tl-end',(total-32)+'px');
+      phases.forEach(function(ph){
+        var dp=(ph.offsetTop+ph.offsetHeight*0.22)/total;
+        ph.style.setProperty('--dot-delay',(0.1+dp*1.2).toFixed(2)+'s');
+      });
+    }
+    layout();
+    window.addEventListener('resize',layout);
+    if('ResizeObserver' in window){new ResizeObserver(layout).observe(track);}
+  }
+})();
+</script>
+</body>
+</html>
