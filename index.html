@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Distracted Driving Identification &amp; Mitigation — Illinois State University</title>
-<meta name="description" content="An IRB-approved research study by Illinois State University, with the Town of Normal, testing roadside signs that reduce distracted driving in monitored zones.">
+<meta name="description" content="An Illinois State University research study testing roadside signs that remind drivers to put their phones down during school drop-off and pick-up in Normal, Illinois.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
@@ -49,16 +49,21 @@ header.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--b
 .nav-inner{max-width:var(--maxw);margin:0 auto;padding:.7rem var(--pad);display:flex;align-items:center;justify-content:space-between;gap:1rem}
 .brand{font-family:var(--sans);font-weight:800;letter-spacing:-.01em;font-size:1.02rem;text-decoration:none;display:flex;align-items:center;gap:.6rem}
 .brand .mk{width:40px;height:24px;border-radius:5px;background:var(--red);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.68rem;font-weight:900;letter-spacing:.03em}
-.nav-links{display:flex;gap:1.35rem;font-family:var(--sans);font-weight:500;font-size:.92rem}
-.nav-links a{text-decoration:none;color:var(--muted);padding:.2rem 0;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
-.nav-links a:hover,.nav-links a.active{color:var(--ink);border-color:var(--red)}
+.nav-links{display:flex;gap:1.1rem;font-family:var(--sans);font-weight:500;font-size:.9rem;position:relative}
+.nav-links a{text-decoration:none;color:var(--muted);padding:.35rem 0;white-space:nowrap;transition:color .3s ease}
+.nav-links a:hover,.nav-links a.active{color:var(--ink)}
+.nav-ind{position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--red);border-radius:2px;opacity:0;pointer-events:none;transition:transform .4s cubic-bezier(.4,0,.2,1),width .4s cubic-bezier(.4,0,.2,1),opacity .3s ease}
+.nav-ind.show{opacity:1}
+section[id]{scroll-margin-top:64px}
 .nav-toggle{display:none;background:none;border:1px solid var(--line);border-radius:8px;color:var(--ink);font-family:var(--sans);font-weight:600;padding:.4rem .7rem;cursor:pointer}
-@media(max-width:880px){
+@media(max-width:1100px){
   /* Fixed (not absolute) so the dropdown never depends on the sticky header as a
      containing block -- some mobile browsers position an absolute child of a sticky
      element incorrectly, which made this menu open invisibly off-screen. */
   .nav-links{position:fixed;top:var(--nav-h,58px);left:0;right:0;max-height:calc(100vh - var(--nav-h,58px));overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--surface);flex-direction:column;gap:0;padding:.4rem var(--pad) 1rem;border-bottom:1px solid var(--line);display:none;z-index:49}
-  .nav-links.open{display:flex}.nav-links a{padding:.7rem 0;border-bottom:1px solid var(--line)}
+  .nav-links.open{display:flex}.nav-links a{padding:.75rem .8rem;border-bottom:1px solid var(--line);font-size:1rem}
+  .nav-links a.active{color:var(--red);font-weight:700;box-shadow:inset 3px 0 0 var(--red)}
+  .nav-ind{display:none}
   .nav-toggle{display:block;position:relative;z-index:51}
 }
 
@@ -118,13 +123,17 @@ header.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--b
 @keyframes ph{0%,100%{opacity:.55}50%{opacity:1}}
 .shine{animation:shine 4.5s ease-in-out infinite}
 @keyframes shine{0%,55%{transform:skewX(-22deg) translateX(0)}85%,100%{transform:skewX(-22deg) translateX(330px)}}
-.ssign{width:100%;max-width:230px;height:auto;display:block;margin:0 auto}
+.ssign{width:100%;max-width:124px;height:auto;display:block;margin:0 auto}
+.ssign .leds{animation:ledBlink 1.6s steps(1) infinite}
+@keyframes ledBlink{0%,55%{opacity:1}56%,100%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.ssign .leds{animation:none}}
 
 /* reveals (JS only) */
 .js .rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--i,0)*70ms)}
 .js .in .rv,.js .rv.in{opacity:1;transform:none}
 .js .rv.l{transform:translateX(-24px)}
 .js .rv.s{transform:scale(.94)}
+.js .in .rv.l,.js .rv.l.in,.js .in .rv.s,.js .rv.s.in{transform:none}
 @media (prefers-reduced-motion:reduce){
   .js .rv{opacity:1;transform:none;transition:none}
   .lane,.lane2,.ledpulse,.blink,.car,.dcar,.cone,.dblink,.phone,.shine,.hero-entry{animation:none!important;opacity:1;transform:none}
@@ -150,11 +159,13 @@ header.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--b
 .dark .card:hover{box-shadow:0 16px 36px rgba(0,0,0,.45)}
 .card .kind{font-family:var(--sans);font-weight:700;font-size:.78rem;margin-bottom:.7rem;display:inline-flex;align-items:center;gap:.5rem;text-transform:uppercase;letter-spacing:.04em}
 .card.smart{border-top:4px solid var(--red)}.card.smart .kind{color:#FF6B76}
-.card.static{border-top:4px solid var(--yg)}.card.static .kind{color:#BFE04A}
+.card.static{border-top:4px solid #3B6FC4}.card.static .kind{color:#8FB4F0}
+.records{margin-top:1rem;padding-top:.9rem;border-top:1px dashed #2E3641;font-size:.95rem;color:#C4CBD3}
+.records strong{font-family:var(--sans);color:#fff}
 .spec{font-family:var(--sans);font-size:.82rem;color:var(--muted);margin-top:1rem;padding-top:.9rem;border-top:1px dashed var(--line)}
 .dark .spec{border-color:#2E3641}
 .demo-wrap{margin-top:2rem;border-radius:16px;overflow:hidden;border:1px solid #28303A;box-shadow:0 20px 50px rgba(0,0,0,.4)}
-.card.static .inner{display:grid;grid-template-columns:1fr 150px;gap:1rem;align-items:center}
+.card.static .inner{display:grid;grid-template-columns:1fr 130px;gap:1.2rem;align-items:center}
 @media(max-width:560px){.card.static .inner{grid-template-columns:1fr}}
 .callout{margin-top:1.8rem;background:#161C25;border:1px solid #28303A;border-radius:16px;padding:1.4rem 1.6rem;display:flex;gap:1.2rem;align-items:flex-start;flex-wrap:wrap}
 .callout .clock{font-family:var(--sans);font-weight:800;color:var(--amber);font-size:1.05rem;white-space:nowrap;text-shadow:0 0 12px rgba(247,161,0,.5)}
@@ -185,10 +196,21 @@ table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:.9re
 .loc-table .loc strong{font-weight:700}
 .loc-table .loc .sub{display:block;color:var(--muted);font-size:.82rem;margin-top:.15rem}
 .loc-table tr:last-child td,.loc-table tr:last-child th{border-bottom:none}
+@media(max-width:640px){
+  .loc-table thead{display:none}
+  .loc-table,.loc-table tbody{display:block;width:100%}
+  .loc-table tr{display:grid;grid-template-columns:1fr;gap:.2rem;padding:1rem 1.1rem;border-bottom:1px solid var(--line)}
+  .loc-table tr:last-child{border-bottom:none}
+  .loc-table td{padding:0;border:0}
+  .loc-table td:nth-child(2){color:var(--muted);font-size:.88rem}
+  .loc-table td:nth-child(2)::before{content:"Near "}
+  .loc-table td:nth-child(3){margin-top:.45rem}
+}
 .tag{font-size:.72rem;font-weight:700;padding:.22rem .6rem .22rem .45rem;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap;font-family:var(--sans);display:inline-flex;align-items:center;gap:.35rem}
 .tag .ico{width:16px;height:16px}
 .tag-smart{color:#fff;background:var(--red);border-color:var(--red)}
-.tag-static{color:#2f3a00;background:var(--yg);border-color:var(--yg)}
+.tag-static{color:#fff;background:#2F5DA8;border-color:#2F5DA8}
+.tag-none{color:var(--muted);background:var(--alt);border-color:var(--line)}
 
 /* findings */
 .data-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:2.2rem}
@@ -219,9 +241,116 @@ table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:.9re
 /* privacy */
 .pledge{list-style:none;padding:0;margin:2rem 0 0;display:grid;gap:14px}
 .pledge li{display:flex;gap:1rem;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1.1rem 1.3rem}
-.pledge .ic{flex:none;width:28px;height:28px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font-weight:800;font-family:var(--sans);font-size:.9rem;transform:scale(.4);transition:transform .45s cubic-bezier(.3,1.4,.5,1);transition-delay:calc(var(--i,0)*70ms + .25s)}
+.pledge .ic{flex:none;width:28px;height:28px;border-radius:50%;background:#1F3864;color:#fff;display:grid;place-items:center;font-weight:800;font-family:var(--sans);font-size:.9rem;transform:scale(.4);transition:transform .45s cubic-bezier(.3,1.4,.5,1);transition-delay:calc(var(--i,0)*70ms + .25s)}
 .in .pledge .ic{transform:none}
 .no-js .pledge .ic{transform:none}
+
+/* what to expect: interactive picture */
+.xp{display:grid;grid-template-columns:1.35fr 1fr;gap:26px;margin-top:2rem;align-items:start}
+@media(max-width:900px){.xp{grid-template-columns:1fr}}
+.xp-scene{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 14px 34px rgba(20,24,31,.08);background:#EAF1F8}
+.xp-svg{display:block;width:100%;height:auto}
+.xp-hot{position:absolute;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;border:2.5px solid var(--red);background:#fff;color:var(--red);font-family:var(--sans);font-weight:900;font-size:.95rem;cursor:pointer;display:grid;place-items:center;box-shadow:0 4px 12px rgba(0,0,0,.18);transition:transform .2s,background .2s,color .2s;z-index:2;padding:0}
+.xp-hot::after{content:"";position:absolute;inset:-7px;border-radius:50%;border:2px solid var(--red);opacity:0;animation:xpPulse 2.2s ease-out infinite;pointer-events:none}
+.xp-hot.on{background:var(--red);color:#fff;transform:translate(-50%,-50%) scale(1.08)}
+.xp-hot.on::after{animation:none}
+.xp-hot:hover{transform:translate(-50%,-50%) scale(1.12)}
+.xp-hot:focus-visible,.xp-tab:focus-visible,.flip:focus-visible,.rtab:focus-visible,.flip-all:focus-visible{outline:3px solid #3B6FC4;outline-offset:3px}
+@keyframes xpPulse{0%{transform:scale(.8);opacity:.7}100%{transform:scale(1.5);opacity:0}}
+@media(max-width:520px){.xp-hot{width:26px;height:26px;font-size:.76rem;border-width:2px}.xp-hot::after{inset:-5px}}
+.xp-tabs{display:flex;flex-wrap:wrap;gap:8px}
+.xp-tab{display:inline-flex;align-items:center;gap:.45rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.4rem .9rem .4rem .4rem;font-family:var(--sans);font-weight:700;font-size:.9rem;cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.xp-tab .n{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--red-tint);color:var(--red);font-weight:900;font-size:.78rem}
+.xp-tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.xp-tab.on .n{background:var(--red);color:#fff}
+.xp-panels{margin-top:14px}
+.xp-panel{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--red);border-radius:16px;padding:1.4rem 1.5rem;margin-bottom:12px}
+.js .xp-panel{display:none;margin-bottom:0}
+.js .xp-panel.on{display:block;animation:xpIn .35s ease}
+@keyframes xpIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.xp-panel h3{font-size:1.25rem;margin-bottom:.45em}
+.xp-panel p{margin:0 0 .7rem;font-size:1.02rem}
+.xp-panel .big-time{font-family:var(--sans);font-weight:900;font-size:1.5rem;color:var(--red);line-height:1.25;margin:.2rem 0 .7rem}
+.xp-link{font-family:var(--sans);font-weight:700;font-size:.92rem;color:var(--red);text-decoration:none;border-bottom:1.5px solid currentColor}
+
+/* privacy: tally sheet + flip cards */
+.pv{display:grid;grid-template-columns:1fr 1.45fr;gap:28px;margin-top:2.2rem;align-items:start}
+@media(max-width:900px){.pv{grid-template-columns:1fr}}
+.tally{background:#FFFDF6;border:1px solid #E7DFC8;border-radius:16px;padding:1.6rem 1.5rem 1.4rem;box-shadow:0 10px 26px rgba(20,24,31,.06);position:relative;margin-top:9px}
+.tally::before{content:"";position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:70px;height:18px;border-radius:5px;background:#9AA3AE}
+.tally-head{display:flex;justify-content:space-between;align-items:center;gap:.6rem;font-family:var(--sans);font-weight:800;font-size:1.05rem}
+.ex-badge{font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:.15rem .55rem;background:#fff}
+.tally-sub{font-size:.92rem;color:var(--muted);margin:.35rem 0 .9rem}
+.tally-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:.7rem;padding:.8rem 0;border-top:1px dashed #D9CFB4}
+.tally-row .tl{font-family:var(--sans);font-weight:700;font-size:.95rem}
+.marks line{stroke:#1F3864;stroke-width:3;stroke-linecap:round;stroke-dasharray:40;stroke-dashoffset:0}
+.js .marks line{stroke-dashoffset:40;transition:stroke-dashoffset .45s ease;transition-delay:calc(var(--d,0)*110ms + .3s)}
+.js .tally.in .marks line{stroke-dashoffset:0}
+.tn{font-family:var(--sans);font-weight:900;font-size:1.3rem;color:#1F3864;text-align:right}
+.tally-foot{max-width:none;margin:.9rem 0 0;font-size:.95rem;border-top:1px dashed #D9CFB4;padding-top:.8rem}
+.flips-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.flips-head h3{margin:0;font-size:1.3rem}
+.flip-all{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:.4rem .95rem;font-family:var(--sans);font-weight:700;font-size:.85rem;cursor:pointer;color:var(--ink)}
+.flip-all:hover{border-color:var(--ink)}
+.flips-hint{margin:.3rem 0 1rem;color:var(--muted);font-size:.95rem}
+.flips{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:640px){.flips{grid-template-columns:1fr 1fr}}
+.flip{position:relative;display:block;width:100%;height:150px;perspective:900px;border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;color:inherit;border-radius:14px}
+.flip-in{position:absolute;inset:0;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transition:transform .55s cubic-bezier(.3,.7,.2,1)}
+.flip.on .flip-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:14px;padding:.95rem 1rem;display:flex;flex-direction:column;gap:.45rem;box-sizing:border-box}
+.front{background:var(--surface);border:1px solid var(--line);transition:box-shadow .2s}
+.flip:hover .front{box-shadow:0 8px 20px rgba(20,24,31,.1)}
+.front .fi{width:36px;height:36px;border-radius:10px;background:var(--alt);display:grid;place-items:center}
+.front .fi svg{width:22px;height:22px}
+.front .fq{font-family:var(--sans);font-weight:700;font-size:.95rem;line-height:1.25}
+.front .ft{margin-top:auto;font-family:var(--sans);font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.back{transform:rotateY(180deg);justify-content:center}
+.back.yes{background:#1F3864;color:#fff}
+.back.no{background:#fff;border:2px solid var(--red)}
+.back .fa{font-family:var(--sans);font-weight:900;font-size:1.02rem}
+.back.no .fa{color:var(--red)}
+.back .fb{font-size:.9rem;line-height:1.35}
+.promises{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:2.4rem;padding-top:1.6rem;border-top:1px solid var(--line)}
+@media(max-width:900px){.promises{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.promises{grid-template-columns:1fr}}
+.pr{display:flex;gap:.7rem;align-items:flex-start}
+.pr svg{flex:none;width:28px;height:28px}
+.pr strong{display:block;font-family:var(--sans);font-size:.98rem}
+.pr span{display:block;font-size:.92rem;color:var(--muted);margin-top:.15rem;line-height:1.4}
+
+/* roles: tabs */
+.rtabs{display:inline-flex;flex-wrap:wrap;gap:4px;background:var(--alt);border:1px solid var(--line);border-radius:999px;padding:5px;margin-top:.6rem}
+.rtab{border:0;background:none;padding:.6rem 1.15rem;border-radius:999px;font-family:var(--sans);font-weight:700;font-size:.93rem;color:var(--muted);cursor:pointer;transition:background .25s,color .25s}
+.rtab:hover{color:var(--ink)}
+.rtab.on{background:var(--red);color:#fff;box-shadow:0 4px 12px rgba(216,30,44,.25)}
+@media(max-width:520px){.rtabs{display:flex;border-radius:16px}.rtab{flex:1 1 auto}}
+.rpanels{margin-top:1.2rem}
+.rpanel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:1.6rem;display:grid;grid-template-columns:.9fr 1.1fr;gap:1.6rem;align-items:start;margin-bottom:12px}
+@media(max-width:800px){.rpanel{grid-template-columns:1fr}}
+.js .rpanel{display:none;margin-bottom:0}
+.js .rpanel.on{display:grid;animation:xpIn .35s ease}
+.rp-head{display:flex;gap:1rem;align-items:flex-start}
+.rp-ic{flex:none;width:56px;height:56px;border-radius:16px;background:var(--red-tint);display:grid;place-items:center}
+.rp-ic svg{width:30px;height:30px}
+.rp-head h3{font-size:1.25rem;margin:.1rem 0 .3rem}
+.rp-head p{margin:0;color:var(--muted)}
+.rp-tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(max-width:520px){.rp-tiles{grid-template-columns:1fr}}
+.rp-tile{display:flex;align-items:center;gap:.75rem;background:var(--alt);border:1px solid var(--line);border-radius:14px;padding:.8rem .9rem;font-family:var(--sans);font-weight:700;font-size:.95rem;line-height:1.3}
+.rt-ic{flex:none;width:38px;height:38px;border-radius:11px;background:#fff;border:1px solid var(--line);display:grid;place-items:center}
+.rt-ic svg{width:22px;height:22px}
+.mutcd{margin-top:1.8rem;display:flex;gap:1.1rem;align-items:flex-start;background:#161C25;border:1px solid #2E3641;border-left:5px solid #3B6FC4;border-radius:16px;padding:1.4rem 1.5rem}
+.mutcd-ic{flex:none;width:48px;height:48px;border-radius:14px;background:#3B6FC4;display:grid;place-items:center}
+.mutcd-ic svg{width:28px;height:28px}
+.mutcd h3{color:#fff;font-size:1.15rem;margin:.1rem 0 .45rem}
+.mutcd p{color:#C4CBD3;margin:0 0 .6rem;font-size:1rem}
+.mutcd p:last-child{margin-bottom:0}
+.mutcd strong{color:#fff}
+.rp-list{list-style:none;margin:0;padding:0;counter-reset:rp;display:grid;gap:.75rem}
+.rp-list li{counter-increment:rp;display:flex;gap:.8rem;align-items:flex-start;font-size:1.02rem}
+.rp-list li::before{content:counter(rp);flex:none;width:28px;height:28px;border-radius:50%;background:#1F3864;color:#fff;display:grid;place-items:center;font-family:var(--sans);font-weight:800;font-size:.82rem;margin-top:1px}
+@media (prefers-reduced-motion:reduce){.xp-hot::after{animation:none}.flip-in{transition:none}.js .marks line{transition:none}.js .xp-panel.on,.js .rpanel.on{animation:none}}
 .pledge p{margin:0}.pledge strong{font-family:var(--sans)}
 
 /* timeline */
@@ -276,7 +405,7 @@ footer .disc{max-width:72ch;margin-top:.9rem;line-height:1.6}
     <a class="brand" href="#top"><span class="mk">ISU</span> Phones Down Study</a>
     <button class="nav-toggle" aria-expanded="false" aria-controls="navlinks">Menu</button>
     <nav class="nav-links" id="navlinks">
-      <a href="#overview">Overview</a><a href="#how">Signs</a><a href="#locations">Locations</a><a href="#findings">Findings</a><a href="#privacy">Privacy</a><a href="#timeline">Timeline</a><a href="#contact">Contact</a>
+      <a href="#overview">About</a><a href="#expect">What to expect</a><a href="#privacy">Privacy</a><a href="#how">Signs</a><a href="#locations">Locations</a><a href="#timeline">Timeline</a><a href="#roles">Roles</a><a href="#partners">Partners</a><a href="#contact">Contact</a><span class="nav-ind" aria-hidden="true"></span>
     </nav>
   </div>
 </header>
@@ -286,9 +415,9 @@ footer .disc{max-width:72ch;margin-top:.9rem;line-height:1.6}
   <div class="wrap">
     <div class="hero-grid">
       <div>
-        <span class="eyebrow hero-entry">A road-safety research study · Normal, Illinois</span>
+        <span class="eyebrow hero-entry">Road safety research · Normal, Illinois</span>
         <h1 class="hero-entry d1">Distracted Driving Identification and Mitigation</h1>
-        <p class="hero-sub hero-entry d2">Testing roadside signs that prompt drivers to put their phones down in monitored zones — during drop-off and pick-up, when children and families are closest to the road.</p>
+        <p class="hero-sub hero-entry d2">We are testing roadside signs that remind drivers to put their phones down during morning drop-off and afternoon pick-up.</p>
         <div class="lockup hero-entry d3"><span class="plate">Illinois State University</span></div>
         <div class="lockup-sub hero-entry d4">with the Town of Normal and McLean County Unit District No. 5</div>
         <span class="irb-badge hero-entry d5">Approved by ISU IRB · IRB-2026-238</span>
@@ -303,7 +432,6 @@ footer .disc{max-width:72ch;margin-top:.9rem;line-height:1.6}
           </div>
           <div class="led-post"></div>
         </div>
-        <div class="scene-cap">The message a driver sees at a study site</div>
       </div>
     </div>
   </div>
@@ -311,23 +439,190 @@ footer .disc{max-width:72ch;margin-top:.9rem;line-height:1.6}
 
 <section id="overview">
   <div class="wrap">
-    <span class="eyebrow rv">Overview</span>
-    <h2 class="rv">Small signs, aimed at the riskiest minutes of the day</h2>
-    <p class="lead rv">Every school morning and afternoon, traffic surges around Normal's schools. Our preliminary study found that distracted driving — handheld phone use and hard braking — climbs sharply during these windows, exactly when families and children are near the road.</p>
-    <p class="rv">This project tests whether simple roadside signs can change that behavior. Illinois State University is comparing two evidence-based approaches — a real-time smart sign and an always-on static sign — to learn which is the most effective, scalable, and practical way to keep monitored zones safer.</p>
+    <span class="eyebrow rv">About the study</span>
+    <h2 class="rv">Why we are doing this study</h2>
+    <p class="lead rv">Drop-off and pick-up are some of the busiest times on the roads near schools. Children and families are close to traffic. Our earlier study found that more drivers are distracted by their phones during these busy times.</p>
+    <p class="rv">This study tests two kinds of roadside signs that remind drivers to put their phones down. We want to find out which one works better. What we learn can help make more roads safer in the future.</p>
     <div class="statband rv s">
-      <div class="cell"><div class="big"><span data-count="20" data-dec="0">0</span><span class="u">×</span></div><div class="lbl">higher distracted-driving risk at every study site during drop-off and pick-up, versus the town overall.</div></div>
-      <div class="cell"><div class="big"><span data-count="0.9375" data-dec="4">0.0000</span></div><div class="lbl">town-wide distracted-driving risk index measured across Normal in the preliminary study.</div></div>
-      <div class="cell"><div class="big"><span data-count="8" data-dec="0">0</span></div><div class="lbl">monitored zones studied across Normal, each beside a Unit&nbsp;5 elementary school.</div></div>
+      <div class="cell"><div class="big"><span data-count="8" data-dec="0">0</span></div><div class="lbl">Unit&nbsp;5 elementary schools are part of the study.</div></div>
+      <div class="cell"><div class="big"><span data-count="6" data-dec="0">0</span></div><div class="lbl">of these schools will get new signs nearby.</div></div>
+      <div class="cell"><div class="big"><span data-count="30" data-dec="0">0</span><span class="u"> min</span></div><div class="lbl">in the morning and 30 in the afternoon. That is when the study runs.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="expect" class="alt">
+  <div class="wrap">
+    <span class="eyebrow rv">What to expect</span>
+    <h2 class="rv">What you may notice near the schools</h2>
+    <p class="lead rv">Click or tap a number in the picture to see what each thing is.</p>
+    <div class="xp rv s">
+      <div class="xp-scene">
+        <svg class="xp-svg" viewBox="0 0 640 360" role="img" aria-label="A drawing of a street in front of a school, with a new sign, a small sensor, a person taking notes on the sidewalk and a car on the road">
+  <defs>
+    <linearGradient id="xpsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DCE8F4"/><stop offset="1" stop-color="#F4F7FA"/></linearGradient>
+    <filter id="xpglow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="640" height="360" fill="url(#xpsky)"/>
+  <g fill="#fff" opacity=".95"><ellipse cx="250" cy="62" rx="38" ry="12"/><ellipse cx="276" cy="53" rx="24" ry="12"/><ellipse cx="410" cy="88" rx="30" ry="10"/><ellipse cx="430" cy="81" rx="18" ry="9"/></g>
+  <g transform="translate(560,62)"><circle r="26" fill="#fff" stroke="#1F3864" stroke-width="4"/><line x1="0" y1="0" x2="0" y2="-15" stroke="#1F3864" stroke-width="3.5" stroke-linecap="round"/><line x1="0" y1="0" x2="11" y2="5" stroke="#D81E2C" stroke-width="3.5" stroke-linecap="round"/><circle r="3" fill="#1F3864"/></g>
+  <g>
+    <line x1="150" y1="66" x2="150" y2="122" stroke="#6B7480" stroke-width="3"/>
+    <rect x="151" y="68" width="22" height="14" fill="#D81E2C"/>
+    <rect x="16" y="132" width="160" height="118" fill="#E9D8C4" stroke="#B89C80" stroke-width="2"/>
+    <rect x="10" y="120" width="172" height="14" rx="2" fill="#9C3A2B"/>
+    <text x="96" y="150" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="800" font-size="11" letter-spacing="1.5" fill="#5A4633">SCHOOL</text>
+    <g fill="#A9CBE6" stroke="#8A7A66" stroke-width="1.2">
+      <rect x="28" y="160" width="20" height="22"/><rect x="56" y="160" width="20" height="22"/><rect x="116" y="160" width="20" height="22"/><rect x="144" y="160" width="20" height="22"/>
+      <rect x="28" y="198" width="20" height="22"/><rect x="144" y="198" width="20" height="22"/>
+    </g>
+    <rect x="82" y="194" width="28" height="56" fill="#6B4F3A"/>
+    <circle cx="104" cy="224" r="2" fill="#E9D8C4"/>
+  </g>
+  <rect x="0" y="250" width="640" height="16" fill="#CDD4DC"/>
+  <rect x="0" y="264" width="640" height="3" fill="#AEB6BF"/>
+  <rect x="0" y="267" width="640" height="93" fill="#3A414B"/>
+  <line x1="0" y1="316" x2="640" y2="316" stroke="#E8C547" stroke-width="3" stroke-dasharray="20 14"/>
+  <g fill="#F2F4F6"><rect x="74" y="269" width="7" height="89"/><rect x="87" y="269" width="7" height="89"/><rect x="100" y="269" width="7" height="89"/><rect x="113" y="269" width="7" height="89"/></g>
+  <rect x="193" y="214" width="6" height="36" fill="#7A5A3A"/><circle cx="196" cy="204" r="18" fill="#86B37F"/>
+  <rect x="609" y="214" width="6" height="36" fill="#7A5A3A"/><circle cx="612" cy="204" r="18" fill="#86B37F"/>
+  <g>
+    <rect x="231" y="236" width="5" height="26" rx="2" fill="#2A2E35"/><rect x="240" y="236" width="5" height="26" rx="2" fill="#2A2E35"/>
+    <rect x="226" y="206" width="24" height="34" rx="8" fill="#1F3864"/>
+    <circle cx="238" cy="195" r="9" fill="#D9A57A"/>
+    <path d="M229 194 a9 9 0 0 1 18 0 z" fill="#3B2A20"/>
+    <rect x="244" y="214" width="13" height="16" rx="1.5" fill="#F2F4F6" stroke="#6B7480" stroke-width="1.2"/>
+    <line x1="247" y1="219" x2="254" y2="219" stroke="#9AA3AE" stroke-width="1.2"/><line x1="247" y1="223" x2="254" y2="223" stroke="#9AA3AE" stroke-width="1.2"/>
+  </g>
+  <rect x="334" y="200" width="4" height="62" fill="#6B7480"/>
+  <rect x="323" y="188" width="26" height="16" rx="3" fill="#2E343D"/>
+  <circle cx="341" cy="196" r="3.6" fill="#1B1F26" stroke="#9AA3AE" stroke-width="1"/>
+  <circle cx="330" cy="196" r="2" fill="#FF3B3B"/>
+  <rect x="466" y="172" width="8" height="90" fill="#6B7480"/>
+  <rect x="420" y="112" width="100" height="62" rx="8" fill="#05070A" stroke="#2B2F36" stroke-width="3"/>
+  <text x="470" y="140" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="900" font-size="16" letter-spacing="1" fill="#F7A100" filter="url(#xpglow)">PHONES</text>
+  <text x="470" y="162" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="900" font-size="16" letter-spacing="1" fill="#F7A100" filter="url(#xpglow)">DOWN</text>
+  <g transform="translate(262,170) scale(.8)">
+  <ellipse cx="70" cy="167" rx="72" ry="6" fill="#000" opacity=".22"/>
+  <g transform="translate(140,0) scale(-1,1)">
+    <path d="M4 150 C1 150 0 146 1 141 L5 127 C7 118 14 112 24 111 L34 111 C40 98 52 90 66 90 L86 90 C98 90 108 96 116 106 L128 120 C134 122 138 128 138 136 L138 148 C138 153 135 156 130 156 L10 156 C6 156 4 154 4 150 Z" fill="#D6262F" stroke="#87101A" stroke-width="1.5"/>
+    <path d="M40 108 C45 99 54 94 65 94 L84 94 C93 94 100 98 106 106 L114 118 L36 118 Z" fill="#20242B"/>
+    <rect x="73" y="94" width="4" height="24" fill="#87101A"/>
+    <line x1="90" y1="90" x2="96" y2="72" stroke="#2A2E33" stroke-width="2" stroke-linecap="round"/>
+    <path d="M38 108 L30 106 L31 113 L40 113 Z" fill="#87101A"/>
+  </g>
+  <rect x="60" y="132" width="14" height="4" rx="2" fill="#F0B9BC"/>
+  <circle cx="12" cy="132" r="6" fill="#7A0A10"/><circle cx="12" cy="132" r="3.2" fill="#FF4B52"/>
+  <path d="M130 128 L138 132 L138 142 L128 140 Z" fill="#FFE9A8"/>
+  <circle cx="28" cy="158" r="13" fill="#14181F"/><circle cx="28" cy="158" r="6" fill="#5A636D"/><circle cx="28" cy="158" r="2.2" fill="#AEB6BF"/>
+  <circle cx="112" cy="158" r="13" fill="#14181F"/><circle cx="112" cy="158" r="6" fill="#5A636D"/><circle cx="112" cy="158" r="2.2" fill="#AEB6BF"/>
+</g>
+</svg>
+        <button type="button" class="xp-hot on" data-xp="signs" aria-pressed="true" aria-label="1. New signs" style="left:81.3%;top:30%">1</button>
+        <button type="button" class="xp-hot" data-xp="times" aria-pressed="false" aria-label="2. When it happens" style="left:92%;top:10.5%">2</button>
+        <button type="button" class="xp-hot" data-xp="observers" aria-pressed="false" aria-label="3. Observers" style="left:37.2%;top:46.5%">3</button>
+        <button type="button" class="xp-hot" data-xp="car" aria-pressed="false" aria-label="4. Your car" style="left:49.5%;top:75%">4</button>
+      </div>
+      <div class="xp-side">
+        <div class="xp-tabs">
+          <button type="button" class="xp-tab on" data-xp="signs" aria-pressed="true"><span class="n">1</span>New signs</button>
+          <button type="button" class="xp-tab" data-xp="times" aria-pressed="false"><span class="n">2</span>When</button>
+          <button type="button" class="xp-tab" data-xp="observers" aria-pressed="false"><span class="n">3</span>Observers</button>
+          <button type="button" class="xp-tab" data-xp="car" aria-pressed="false"><span class="n">4</span>Your car</button>
+        </div>
+        <div class="xp-panels" aria-live="polite">
+          <div class="xp-panel on" id="xp-signs">
+            <h3>New signs by the road</h3>
+            <p>Six Unit&nbsp;5 elementary schools will get a new sign. Each one sits a short distance before the school entrance or main crosswalk.</p>
+            <p>Town of Normal staff help pick each spot.</p>
+            <a class="xp-link" href="#how">See the two types of signs</a>
+          </div>
+          <div class="xp-panel" id="xp-times">
+            <h3>Two short times each school day</h3>
+            <div class="big-time">7:20&ndash;7:50 AM<br>2:20&ndash;2:50 PM</div>
+            <p>The study only runs during these times on school days. It will last about three months this fall.</p>
+          </div>
+          <div class="xp-panel" id="xp-observers">
+            <h3>People taking notes</h3>
+            <p>Trained ISU students may stand near the road and count what drivers do as they pass.</p>
+            <p>They only watch and take notes.</p>
+          </div>
+          <div class="xp-panel" id="xp-car">
+            <h3>Is anything recorded about my car?</h3>
+            <p>Only whether the driver was using a phone or was distracted in another way. That gets counted and added to a total.</p>
+            <p>Nothing that could identify you is recorded.</p>
+            <a class="xp-link" href="#privacy">See exactly what is and is not recorded</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="privacy">
+  <div class="wrap">
+    <span class="eyebrow rv">Privacy</span>
+    <h2 class="rv">What is recorded and what is not</h2>
+    <p class="lead rv">We count what drivers do. We do not track who they are.</p>
+    <div class="pv">
+      <div class="tally rv" style="--i:0">
+        <div class="tally-head"><span>What gets written down</span><span class="ex-badge">Example</span></div>
+        <p class="tally-sub">One study spot, one morning window (7:20&ndash;7:50 AM)</p>
+        <div class="tally-row">
+          <div class="tl">Drivers using a phone</div>
+          <svg class="marks" viewBox="0 0 54 30" width="54" height="30" aria-hidden="true"><line x1="4" y1="3" x2="4" y2="27" style="--d:0"/><line x1="11" y1="3" x2="11" y2="27" style="--d:1"/><line x1="18" y1="3" x2="18" y2="27" style="--d:2"/><line x1="25" y1="3" x2="25" y2="27" style="--d:3"/><line x1="0" y1="23" x2="29" y2="7" style="--d:4"/><line x1="40" y1="3" x2="40" y2="27" style="--d:5"/><line x1="47" y1="3" x2="47" y2="27" style="--d:6"/></svg>
+        </div>
+        <div class="tally-row">
+          <div class="tl">Other distractions, like eating</div>
+          <svg class="marks" viewBox="0 0 54 30" width="54" height="30" aria-hidden="true"><line x1="4" y1="3" x2="4" y2="27" style="--d:0"/><line x1="11" y1="3" x2="11" y2="27" style="--d:1"/><line x1="18" y1="3" x2="18" y2="27" style="--d:2"/></svg>
+        </div>
+        <p class="tally-foot">That is all. Just counts. Only the student observers and the smart sign sensors collect them. The regular signs collect nothing.</p>
+      </div>
+      <div class="flips-wrap rv" style="--i:1">
+        <div class="flips-head"><h3>Is this recorded?</h3><button type="button" class="flip-all">Show all answers</button></div>
+        <p class="flips-hint">Tap a card to find out.</p>
+        <div class="flips">
+          <button type="button" class="flip" aria-pressed="false"><span class="flip-in">
+            <span class="face front"><span class="fi"><svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5" fill="none" stroke="#1F3864" stroke-width="2"/><line x1="11" y1="18" x2="13" y2="18" stroke="#1F3864" stroke-width="2" stroke-linecap="round"/></svg></span><span class="fq">A phone in the driver's hand</span><span class="ft">Tap to check</span></span>
+            <span class="face back yes"><span class="fa">&#10003; Counted</span><span class="fb">Only as yes or no. It goes into the total count.</span></span>
+          </span></button>
+          <button type="button" class="flip" aria-pressed="false"><span class="flip-in">
+            <span class="face front"><span class="fi"><svg viewBox="0 0 24 24"><path d="M4 11a8 6.5 0 0 1 16 0z" fill="none" stroke="#1F3864" stroke-width="2" stroke-linejoin="round"/><rect x="3.5" y="13" width="17" height="2.6" rx="1.3" fill="#1F3864"/><path d="M4.5 17.5h15v.8a2.2 2.2 0 0 1-2.2 2.2H6.7a2.2 2.2 0 0 1-2.2-2.2z" fill="none" stroke="#1F3864" stroke-width="2" stroke-linejoin="round"/></svg></span><span class="fq">Other distractions, like eating</span><span class="ft">Tap to check</span></span>
+            <span class="face back yes"><span class="fa">&#10003; Counted</span><span class="fb">Only as yes or no, the same way.</span></span>
+          </span></button>
+          <button type="button" class="flip" aria-pressed="false"><span class="flip-in">
+            <span class="face front"><span class="fi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#1F3864" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round"/></svg></span><span class="fq">The time window</span><span class="ft">Tap to check</span></span>
+            <span class="face back yes"><span class="fa">&#10003; Recorded</span><span class="fb">Whether it was the morning or the afternoon window.</span></span>
+          </span></button>
+          <button type="button" class="flip" aria-pressed="false"><span class="flip-in">
+            <span class="face front"><span class="fi"><svg viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="10" rx="2" fill="none" stroke="#1F3864" stroke-width="2"/><line x1="6" y1="12" x2="18" y2="12" stroke="#1F3864" stroke-width="2" stroke-linecap="round"/></svg></span><span class="fq">License plate</span><span class="ft">Tap to check</span></span>
+            <span class="face back no"><span class="fa">&#10005; Never recorded</span><span class="fb">Plates are not written down or stored.</span></span>
+          </span></button>
+          <button type="button" class="flip" aria-pressed="false"><span class="flip-in">
+            <span class="face front"><span class="fi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#1F3864" stroke-width="2"/><circle cx="9" cy="10" r="1.2" fill="#1F3864"/><circle cx="15" cy="10" r="1.2" fill="#1F3864"/><path d="M8.5 15c1.8 1.6 5.2 1.6 7 0" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round"/></svg></span><span class="fq">The driver's face</span><span class="ft">Tap to check</span></span>
+            <span class="face back no"><span class="fa">&#10005; Never recorded</span><span class="fb">Faces are not captured or kept.</span></span>
+          </span></button>
+          <button type="button" class="flip" aria-pressed="false"><span class="flip-in">
+            <span class="face front"><span class="fi"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="#1F3864" stroke-width="2"/><circle cx="9" cy="11" r="2.2" fill="none" stroke="#1F3864" stroke-width="1.8"/><line x1="13.5" y1="10" x2="18" y2="10" stroke="#1F3864" stroke-width="1.8" stroke-linecap="round"/><line x1="13.5" y1="13.5" x2="17" y2="13.5" stroke="#1F3864" stroke-width="1.8" stroke-linecap="round"/></svg></span><span class="fq">Names or student details</span><span class="ft">Tap to check</span></span>
+            <span class="face back no"><span class="fa">&#10005; Never recorded</span><span class="fb">Nothing that could identify a driver or a student.</span></span>
+          </span></button>
+        </div>
+      </div>
+    </div>
+    <div class="promises rv">
+      <div class="pr"><svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13" fill="#1F3864"/><path d="M8.5 14.5l3.5 3.5 7.5-8" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div><strong>No tickets or penalties</strong><span>The only thing that happens is a sign asking drivers to put their phone down.</span></div></div>
+      <div class="pr"><svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13" fill="#1F3864"/><path d="M8.5 14.5l3.5 3.5 7.5-8" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div><strong>Nothing is shared</strong><span>No information goes to the police or to any other group.</span></div></div>
+      <div class="pr"><svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13" fill="#1F3864"/><path d="M8.5 14.5l3.5 3.5 7.5-8" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div><strong>Only ISU keeps the data</strong><span>Illinois State University stores and studies it.</span></div></div>
+      <div class="pr"><svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13" fill="#1F3864"/><path d="M8.5 14.5l3.5 3.5 7.5-8" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div><strong>Reviewed and approved</strong><span>Approved by ISU's research review board (IRB-2026-238).</span></div></div>
     </div>
   </div>
 </section>
 
 <section id="how" class="dark">
   <div class="wrap">
-    <span class="eyebrow rv">How the signs work</span>
-    <h2 class="rv">Two kinds of signs, one message</h2>
-    <p class="rv muted">Both approaches deliver the same words — <strong style="color:#fff">PHONES DOWN</strong> — but they get there differently. Comparing them shows which is worth scaling to more monitored zones. Every sign is designed to meet Federal MUTCD standards.</p>
+    <span class="eyebrow rv">The signs</span>
+    <h2 class="rv">The two types of signs</h2>
+    <p class="rv muted">Both signs show the same message: <strong style="color:#fff">PHONES DOWN</strong>. We are comparing them to see which one helps more.</p>
     <div class="demo-wrap rv s">
 <svg class="demo" viewBox="0 0 760 250" role="img" aria-label="Animated demo: a detector spots a driver holding a phone and the downstream sign lights up PHONES DOWN">
 <defs>
@@ -376,43 +671,48 @@ footer .disc{max-width:72ch;margin-top:.9rem;line-height:1.6}
   <circle cx="112" cy="158" r="13" fill="#14181F"/><circle cx="112" cy="158" r="6" fill="#5A636D"/><circle cx="112" cy="158" r="2.2" fill="#AEB6BF"/>
 </g>
 <g font-family="Archivo,system-ui,sans-serif" font-size="13" font-weight="600" fill="#AEB6BF">
-  <text x="176" y="236">1 &nbsp;Detector spots a handheld phone</text>
-  <text x="520" y="236">2 &nbsp;Sign lights up in real time</text>
+  <text x="176" y="236">1 &nbsp;Sensor sees a phone in hand</text>
+  <text x="520" y="236">2 &nbsp;The sign lights up</text>
 </g>
 </svg></div>
     <div class="two">
       <div class="card smart rv" style="--i:0">
-        <div class="kind">Smart sign · real-time</div>
-        <h3>A sign that responds the moment it matters</h3>
-        <p class="muted">A camera-and-infrared roadside detector spots a driver holding a phone, then triggers a downstream message sign that lights up <strong style="color:#fff">PHONES DOWN</strong> only in that moment — exactly what the animation above shows.</p>
-        <div class="spec">Dual-component detector + blank-out message sign &nbsp;·&nbsp; Sites S5, S6, S7</div>
+        <div class="kind">Smart sign</div>
+        <h3>Lights up when it sees a phone</h3>
+        <p class="muted">A small sensor by the road checks passing cars. If a driver is holding a phone, a sign a little further down the road lights up with <strong style="color:#fff">PHONES DOWN</strong>.</p>
+        <div class="records"><strong>What it records:</strong> Only a count of how many drivers were holding a phone, and when.</div>
       </div>
       <div class="card static rv" style="--i:1">
-        <div class="kind">Static sign · always on</div>
+        <div class="kind">Regular sign</div>
         <div class="inner">
           <div>
-            <h3>A clear message drivers always see</h3>
-            <p class="muted">A reflective, fluorescent yellow-green aluminum sign flanks the school crosswalk with a constant safety message. It is the most cost-effective and fully compliant option.</p>
+            <h3>Always shows the message</h3>
+            <p class="muted">A yellow diamond road sign with the same message. Small lights around the edge flash to catch drivers' eyes. It runs on solar power and has no camera or sensor.</p>
           </div>
           
-<svg class="ssign" viewBox="0 0 220 180" role="img" aria-label="A fluorescent yellow-green reflective sign reading PHONES DOWN">
-<defs><clipPath id="sc"><rect x="34" y="14" width="152" height="112" rx="10"/></clipPath></defs>
-<rect x="106" y="126" width="8" height="54" fill="#5E6672"/>
-<rect x="34" y="14" width="152" height="112" rx="10" fill="#A6C700" stroke="#10140A" stroke-width="5"/>
-<rect x="46" y="26" width="128" height="88" rx="6" fill="none" stroke="#10140A" stroke-width="2.5"/>
-<text x="110" y="62" text-anchor="middle" font-family="Archivo,system-ui,sans-serif" font-weight="900" font-size="24" fill="#10140A">PHONES</text>
-<text x="110" y="96" text-anchor="middle" font-family="Archivo,system-ui,sans-serif" font-weight="900" font-size="24" fill="#10140A">DOWN</text>
-<g clip-path="url(#sc)"><rect class="shine" x="-80" y="0" width="46" height="180" fill="#fff" fill-opacity=".38" transform="skewX(-22)"/></g>
+<svg class="ssign" viewBox="12 52 136 136" role="img" aria-label="A yellow diamond road sign reading PHONES DOWN, with small flashing lights around the edge">
+<defs><filter id="ledg" x="-150%" y="-150%" width="400%" height="400%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<polygon points="80,60 140,120 80,180 20,120" fill="#F5C400" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="80,69 131,120 80,171 29,120" fill="none" stroke="#111" stroke-width="2" stroke-linejoin="round"/>
+<text x="80" y="117" text-anchor="middle" font-family="Archivo,system-ui,sans-serif" font-weight="900" font-size="15" fill="#111">PHONES</text>
+<text x="80" y="136" text-anchor="middle" font-family="Archivo,system-ui,sans-serif" font-weight="900" font-size="15" fill="#111">DOWN</text>
+<g class="leds" fill="#FFB020" filter="url(#ledg)">
+<circle cx="80" cy="64" r="3.4"/><circle cx="136" cy="120" r="3.4"/><circle cx="80" cy="176" r="3.4"/><circle cx="24" cy="120" r="3.4"/>
+<circle cx="108" cy="92" r="3"/><circle cx="108" cy="148" r="3"/><circle cx="52" cy="148" r="3"/><circle cx="52" cy="92" r="3"/>
+</g>
 </svg>
         </div>
-        <div class="spec">Reflective aluminum &nbsp;·&nbsp; min 24″ × 30″ &nbsp;·&nbsp; MUTCD R16-15 &nbsp;·&nbsp; Sites S3, S4, S8</div>
+        <div class="records"><strong>What it records:</strong> Nothing.</div>
       </div>
     </div>
-    <div class="callout rv">
-      <div class="clock">7:20–7:50 AM &nbsp;·&nbsp; 2:20–2:50 PM</div>
-      <p>Signs are active only during these arrival and dismissal windows, for about three months. ISU student observers are sometimes present on foot to record driving behavior using a strict, safe protocol.</p>
+    <div class="mutcd rv">
+      <div class="mutcd-ic"><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M5 5.5h7.5a2 2 0 0 1 2 2V23a2 2 0 0 0-2-2H5z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M23 5.5h-7.5a2 2 0 0 0-2 2V23a2 2 0 0 1 2-2H23z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg></div>
+      <div>
+        <h3>Both signs follow national road sign rules</h3>
+        <p>Every road sign in the U.S. has to follow the <strong>MUTCD</strong> (Manual on Uniform Traffic Control Devices). It is the national rulebook for road signs. It sets things like size, color and where a sign can go, so drivers can spot it and read it quickly.</p>
+        <p>Our signs follow these rules. Town of Normal staff help place each one where drivers will see it in time.</p>
+      </div>
     </div>
-    <div class="compliance rv"><strong>Placement:</strong> Signs sit roughly 150–300 ft ahead of each monitored-zone entrance or main crosswalk, so drivers have time to see the message and respond. Final locations are set with Town of Normal engineering staff under MUTCD sight-distance rules.</div>
   </div>
 </section>
 
@@ -420,101 +720,35 @@ footer .disc{max-width:72ch;margin-top:.9rem;line-height:1.6}
   <div class="wrap">
     <span class="eyebrow rv">Locations</span>
     <h2 class="rv">Where the study takes place</h2>
-    <p class="rv">Eight street segments across Normal were flagged in the preliminary study for repeated distracted driving during predictable traffic surges. Signs go up at six of them, each beside a Unit&nbsp;5 elementary school.</p>
-    <div class="route rv"><div class="route-inner">
-  <div class="node prelim" style="--i:0">
-    <div class="dot">S1</div>
-    <div class="nm">Colene Hoose</div>
-    <div class="ty">Preliminary</div>
-  </div>
-  <div class="node prelim" style="--i:1">
-    <div class="dot">S2</div>
-    <div class="nm">Fairview</div>
-    <div class="ty">Preliminary</div>
-  </div>
-  <div class="node static" style="--i:2">
-    <div class="dot">S3</div>
-    <div class="nm">Glenn</div>
-    <div class="ty">Static sign</div>
-  </div>
-  <div class="node static" style="--i:3">
-    <div class="dot">S4</div>
-    <div class="nm">Grove</div>
-    <div class="ty">Static sign</div>
-  </div>
-  <div class="node smart" style="--i:4">
-    <div class="dot">S5</div>
-    <div class="nm">Oakdale</div>
-    <div class="ty">Smart sign</div>
-  </div>
-  <div class="node smart" style="--i:5">
-    <div class="dot">S6</div>
-    <div class="nm">Parkside</div>
-    <div class="ty">Smart sign</div>
-  </div>
-  <div class="node smart" style="--i:6">
-    <div class="dot">S7</div>
-    <div class="nm">Prairieland</div>
-    <div class="ty">Smart sign</div>
-  </div>
-  <div class="node static" style="--i:7">
-    <div class="dot">S8</div>
-    <div class="nm">Sugar Creek</div>
-    <div class="ty">Static sign</div>
-  </div></div></div>
+    <p class="rv">The study takes place at eight spots in Normal, each near a Unit&nbsp;5 elementary school. Six of these spots will get a new sign.</p>
     <div class="tablewrap">
       <table class="loc-table">
-        <thead><tr><th>Site</th><th>Nearby school</th><th>Location</th><th>Sign</th></tr></thead>
-        <tbody><tr class="rv" style="--i:0"><th scope="row">S1</th><td>Colene Hoose</td><td class="loc"><span class="sub">Grandview Drive & Vernon Avenue / Sheridan Road</span></td><td><span class="tag">Preliminary</span></td></tr><tr class="rv" style="--i:1"><th scope="row">S2</th><td>Fairview</td><td class="loc"><span class="sub">Fairview Street & Linden Street / North Main Street</span></td><td><span class="tag">Preliminary</span></td></tr><tr class="rv" style="--i:2"><th scope="row">S3</th><td>Glenn</td><td class="loc"><strong>306 Glenn Ave, Normal, IL 61761</strong><span class="sub">Glenn Avenue & North School Street</span></td><td><span class="tag tag-static"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="2" width="14" height="11" rx="2" fill="#A6C700" stroke="#1a1f0a" stroke-width="1.4"/><rect x="9.2" y="13" width="1.6" height="6" fill="#6B7480"/></svg>Static sign</span></td></tr><tr class="rv" style="--i:3"><th scope="row">S4</th><td>Grove</td><td class="loc"><strong>1101 Airport Rd, Normal, IL 61761</strong><span class="sub">North Airport Road & Fort Jesse Road / G.E. Road</span></td><td><span class="tag tag-static"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="2" width="14" height="11" rx="2" fill="#A6C700" stroke="#1a1f0a" stroke-width="1.4"/><rect x="9.2" y="13" width="1.6" height="6" fill="#6B7480"/></svg>Static sign</span></td></tr><tr class="rv" style="--i:4"><th scope="row">S5</th><td>Oakdale</td><td class="loc"><strong>601 S Adelaide St, Normal, IL 61761</strong><span class="sub">South Adelaide Street & West Taylor Street / West Hovey Avenue</span></td><td><span class="tag tag-smart"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="16" height="11" rx="2" fill="#05070A" stroke="#3a3f47" stroke-width="1.4"/><rect x="5" y="5" width="10" height="2" fill="#F7A100"/><rect x="6.5" y="8.5" width="7" height="2" fill="#F7A100"/><rect x="9.2" y="13" width="1.6" height="6" fill="#6B7480"/></svg>Smart sign</span></td></tr><tr class="rv" style="--i:5"><th scope="row">S6</th><td>Parkside</td><td class="loc"><strong>1900 W College Ave, Normal, IL 61761</strong><span class="sub">West College Avenue & North Parkside Road</span></td><td><span class="tag tag-smart"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="16" height="11" rx="2" fill="#05070A" stroke="#3a3f47" stroke-width="1.4"/><rect x="5" y="5" width="10" height="2" fill="#F7A100"/><rect x="6.5" y="8.5" width="7" height="2" fill="#F7A100"/><rect x="9.2" y="13" width="1.6" height="6" fill="#6B7480"/></svg>Smart sign</span></td></tr><tr class="rv" style="--i:6"><th scope="row">S7</th><td>Prairieland</td><td class="loc"><strong>1300 E Raab Rd, Normal, IL 61761</strong><span class="sub">East Raab Road & Landmark Drive / North Airport Road</span></td><td><span class="tag tag-smart"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="16" height="11" rx="2" fill="#05070A" stroke="#3a3f47" stroke-width="1.4"/><rect x="5" y="5" width="10" height="2" fill="#F7A100"/><rect x="6.5" y="8.5" width="7" height="2" fill="#F7A100"/><rect x="9.2" y="13" width="1.6" height="6" fill="#6B7480"/></svg>Smart sign</span></td></tr><tr class="rv" style="--i:7"><th scope="row">S8</th><td>Sugar Creek</td><td class="loc"><strong>200 N Towanda Ave, Normal, IL 61761</strong><span class="sub">North Towanda Avenue & Jersey Avenue</span></td><td><span class="tag tag-static"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="2" width="14" height="11" rx="2" fill="#A6C700" stroke="#1a1f0a" stroke-width="1.4"/><rect x="9.2" y="13" width="1.6" height="6" fill="#6B7480"/></svg>Static sign</span></td></tr></tbody>
+        <thead><tr><th>Location</th><th>Near school</th><th>Sign</th></tr></thead>
+        <tbody>
+          <tr class="rv" style="--i:0"><td><strong>Grandview Dr &amp; Vernon Ave / Sheridan Rd</strong></td><td>Colene Hoose</td><td><span class="tag tag-none">No new sign</span></td></tr>
+          <tr class="rv" style="--i:1"><td><strong>Fairview St &amp; Linden St / N Main St</strong></td><td>Fairview</td><td><span class="tag tag-none">No new sign</span></td></tr>
+          <tr class="rv" style="--i:2"><td><strong>Glenn Ave &amp; N School St</strong></td><td>Glenn</td><td><span class="tag tag-static"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="4.6" y="3.1" width="10.8" height="10.8" rx="1" transform="rotate(45 10 8.5)" fill="#F5C400" stroke="#111" stroke-width="1.3"/><rect x="9.2" y="16" width="1.6" height="3.4" fill="#C9D1DA"/></svg>Regular sign</span></td></tr>
+          <tr class="rv" style="--i:3"><td><strong>N Airport Rd &amp; Fort Jesse Rd / G.E. Rd</strong></td><td>Grove</td><td><span class="tag tag-static"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="4.6" y="3.1" width="10.8" height="10.8" rx="1" transform="rotate(45 10 8.5)" fill="#F5C400" stroke="#111" stroke-width="1.3"/><rect x="9.2" y="16" width="1.6" height="3.4" fill="#C9D1DA"/></svg>Regular sign</span></td></tr>
+          <tr class="rv" style="--i:4"><td><strong>S Adelaide St &amp; W Taylor St / W Hovey Ave</strong></td><td>Oakdale</td><td><span class="tag tag-smart"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="16" height="11" rx="2" fill="#05070A" stroke="#3a3f47" stroke-width="1.4"/><rect x="5" y="5" width="10" height="2" fill="#F7A100"/><rect x="6.5" y="8.5" width="7" height="2" fill="#F7A100"/><rect x="9.2" y="13" width="1.6" height="6" fill="#6B7480"/></svg>Smart sign</span></td></tr>
+          <tr class="rv" style="--i:5"><td><strong>W College Ave &amp; N Parkside Rd</strong></td><td>Parkside</td><td><span class="tag tag-smart"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="16" height="11" rx="2" fill="#05070A" stroke="#3a3f47" stroke-width="1.4"/><rect x="5" y="5" width="10" height="2" fill="#F7A100"/><rect x="6.5" y="8.5" width="7" height="2" fill="#F7A100"/><rect x="9.2" y="13" width="1.6" height="6" fill="#6B7480"/></svg>Smart sign</span></td></tr>
+          <tr class="rv" style="--i:6"><td><strong>E Raab Rd &amp; Landmark Dr / N Airport Rd</strong></td><td>Prairieland</td><td><span class="tag tag-smart"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="2" width="16" height="11" rx="2" fill="#05070A" stroke="#3a3f47" stroke-width="1.4"/><rect x="5" y="5" width="10" height="2" fill="#F7A100"/><rect x="6.5" y="8.5" width="7" height="2" fill="#F7A100"/><rect x="9.2" y="13" width="1.6" height="6" fill="#6B7480"/></svg>Smart sign</span></td></tr>
+          <tr class="rv" style="--i:7"><td><strong>N Towanda Ave &amp; Jersey Ave</strong></td><td>Sugar Creek</td><td><span class="tag tag-static"><svg class="ico" viewBox="0 0 20 20" aria-hidden="true"><rect x="4.6" y="3.1" width="10.8" height="10.8" rx="1" transform="rotate(45 10 8.5)" fill="#F5C400" stroke="#111" stroke-width="1.3"/><rect x="9.2" y="16" width="1.6" height="3.4" fill="#C9D1DA"/></svg>Regular sign</span></td></tr>
+        </tbody>
       </table>
     </div>
-    <p class="note rv">Sites S1 and S2 were part of the preliminary observation study. Signs are installed at S3–S8.</p>
-  </div>
-</section>
-
-<section id="findings" class="alt">
-  <div class="wrap">
-    <span class="eyebrow rv">What we found</span>
-    <h2 class="rv">The preliminary evidence</h2>
-    <p class="lead rv">We measured a <strong>Distracted Driving Risk Index (DDRI)</strong> at each site across the school week. Higher numbers mean more distracted behavior. Hover any cell for details.</p>
-    <div class="data-grid">
-      <div class="data-block rv" style="--i:0"><h3>Mornings — drop-off</h3><div class="cap">DDRI by monitored zone and weekday, 7:20–7:50 AM</div><div class="heatmap"><div class="hm-cell hm-corner"></div><div class="hm-cell hm-col">S1</div><div class="hm-cell hm-col">S2</div><div class="hm-cell hm-col">S3</div><div class="hm-cell hm-col">S4</div><div class="hm-cell hm-col">S5</div><div class="hm-cell hm-col">S6</div><div class="hm-cell hm-col">S7</div><div class="hm-cell hm-col">S8</div><div class="hm-cell hm-row">Mon</div><div class="hm-cell hm-val" style="--i:0;background:#8f97cf;color:#14181F" title="Monday morning, S1: DDRI 29.8">29.8</div><div class="hm-cell hm-val" style="--i:1;background:#6d79c9;color:#fff" title="Monday morning, S2: DDRI 23.9">23.9</div><div class="hm-cell hm-val" style="--i:2;background:#969dd0;color:#14181F" title="Monday morning, S3: DDRI 31.0">31.0</div><div class="hm-cell hm-val" style="--i:3;background:#caccda;color:#14181F" title="Monday morning, S4: DDRI 40.0">40.0</div><div class="hm-cell hm-val" style="--i:4;background:#a9afd4;color:#14181F" title="Monday morning, S5: DDRI 34.3">34.3</div><div class="hm-cell hm-val" style="--i:5;background:#b40426;color:#fff" title="Monday morning, S6: DDRI 71.2">71.2</div><div class="hm-cell hm-val" style="--i:6;background:#d1d2db;color:#14181F" title="Monday morning, S7: DDRI 41.1">41.1</div><div class="hm-cell hm-val" style="--i:7;background:#5967c5;color:#fff" title="Monday morning, S8: DDRI 20.5">20.5</div><div class="hm-cell hm-row">Tue</div><div class="hm-cell hm-val" style="--i:8;background:#c2c5d8;color:#14181F" title="Tuesday morning, S1: DDRI 38.6">38.6</div><div class="hm-cell hm-val" style="--i:9;background:#727dca;color:#fff" title="Tuesday morning, S2: DDRI 24.8">24.8</div><div class="hm-cell hm-val" style="--i:10;background:#a0a7d2;color:#14181F" title="Tuesday morning, S3: DDRI 32.8">32.8</div><div class="hm-cell hm-val" style="--i:11;background:#a7acd3;color:#14181F" title="Tuesday morning, S4: DDRI 33.9">33.9</div><div class="hm-cell hm-val" style="--i:12;background:#737eca;color:#fff" title="Tuesday morning, S5: DDRI 25.0">25.0</div><div class="hm-cell hm-val" style="--i:13;background:#dddddd;color:#14181F" title="Tuesday morning, S6: DDRI 43.3">43.3</div><div class="hm-cell hm-val" style="--i:14;background:#a0a7d2;color:#14181F" title="Tuesday morning, S7: DDRI 32.8">32.8</div><div class="hm-cell hm-val" style="--i:15;background:#505fc4;color:#fff" title="Tuesday morning, S8: DDRI 18.9">18.9</div><div class="hm-cell hm-row">Wed</div><div class="hm-cell hm-val" style="--i:16;background:#b4b8d6;color:#14181F" title="Wednesday morning, S1: DDRI 36.2">36.2</div><div class="hm-cell hm-val" style="--i:17;background:#818bcd;color:#fff" title="Wednesday morning, S2: DDRI 27.4">27.4</div><div class="hm-cell hm-val" style="--i:18;background:#9ba2d1;color:#14181F" title="Wednesday morning, S3: DDRI 31.8">31.8</div><div class="hm-cell hm-val" style="--i:19;background:#a7add3;color:#14181F" title="Wednesday morning, S4: DDRI 34.0">34.0</div><div class="hm-cell hm-val" style="--i:20;background:#7681cb;color:#fff" title="Wednesday morning, S5: DDRI 25.5">25.5</div><div class="hm-cell hm-val" style="--i:21;background:#626fc7;color:#fff" title="Wednesday morning, S6: DDRI 22.0">22.0</div><div class="hm-cell hm-val" style="--i:22;background:#7f89cc;color:#fff" title="Wednesday morning, S7: DDRI 27.1">27.1</div><div class="hm-cell hm-val" style="--i:23;background:#3b4cc0;color:#fff" title="Wednesday morning, S8: DDRI 15.3">15.3</div><div class="hm-cell hm-row">Thu</div><div class="hm-cell hm-val" style="--i:24;background:#8d95cf;color:#fff" title="Thursday morning, S1: DDRI 29.4">29.4</div><div class="hm-cell hm-val" style="--i:25;background:#9ba2d1;color:#14181F" title="Thursday morning, S2: DDRI 31.8">31.8</div><div class="hm-cell hm-val" style="--i:26;background:#7a85cb;color:#fff" title="Thursday morning, S3: DDRI 26.2">26.2</div><div class="hm-cell hm-val" style="--i:27;background:#7a84cb;color:#fff" title="Thursday morning, S4: DDRI 26.1">26.1</div><div class="hm-cell hm-val" style="--i:28;background:#707bc9;color:#fff" title="Thursday morning, S5: DDRI 24.4">24.4</div><div class="hm-cell hm-val" style="--i:29;background:#a7add3;color:#14181F" title="Thursday morning, S6: DDRI 34.0">34.0</div><div class="hm-cell hm-val" style="--i:30;background:#7580ca;color:#fff" title="Thursday morning, S7: DDRI 25.3">25.3</div><div class="hm-cell hm-val" style="--i:31;background:#4151c1;color:#fff" title="Thursday morning, S8: DDRI 16.3">16.3</div><div class="hm-cell hm-row">Fri</div><div class="hm-cell hm-val" style="--i:32;background:#868fcd;color:#fff" title="Friday morning, S1: DDRI 28.3">28.3</div><div class="hm-cell hm-val" style="--i:33;background:#7681cb;color:#fff" title="Friday morning, S2: DDRI 25.5">25.5</div><div class="hm-cell hm-val" style="--i:34;background:#929ad0;color:#14181F" title="Friday morning, S3: DDRI 30.3">30.3</div><div class="hm-cell hm-val" style="--i:35;background:#8c95cf;color:#fff" title="Friday morning, S4: DDRI 29.3">29.3</div><div class="hm-cell hm-val" style="--i:36;background:#505fc4;color:#fff" title="Friday morning, S5: DDRI 19.0">19.0</div><div class="hm-cell hm-val" style="--i:37;background:#8b94ce;color:#fff" title="Friday morning, S6: DDRI 29.1">29.1</div><div class="hm-cell hm-val" style="--i:38;background:#5e6cc6;color:#fff" title="Friday morning, S7: DDRI 21.4">21.4</div><div class="hm-cell hm-val" style="--i:39;background:#737eca;color:#fff" title="Friday morning, S8: DDRI 24.9">24.9</div></div><div class="hm-legend"><span>Lower</span><div class="hm-bar"></div><span>Higher distraction</span></div></div>
-      <div class="data-block rv" style="--i:1"><h3>Afternoons — pick-up</h3><div class="cap">DDRI by monitored zone and weekday, 2:20–2:50 PM</div><div class="heatmap"><div class="hm-cell hm-corner"></div><div class="hm-cell hm-col">S1</div><div class="hm-cell hm-col">S2</div><div class="hm-cell hm-col">S3</div><div class="hm-cell hm-col">S4</div><div class="hm-cell hm-col">S5</div><div class="hm-cell hm-col">S6</div><div class="hm-cell hm-col">S7</div><div class="hm-cell hm-col">S8</div><div class="hm-cell hm-row">Mon</div><div class="hm-cell hm-val" style="--i:0;background:#727dca;color:#fff" title="Monday afternoon, S1: DDRI 19.3">19.3</div><div class="hm-cell hm-val" style="--i:1;background:#7d87cc;color:#fff" title="Monday afternoon, S2: DDRI 20.3">20.3</div><div class="hm-cell hm-val" style="--i:2;background:#bfc2d8;color:#14181F" title="Monday afternoon, S3: DDRI 26.2">26.2</div><div class="hm-cell hm-val" style="--i:3;background:#aeb3d5;color:#14181F" title="Monday afternoon, S4: DDRI 24.7">24.7</div><div class="hm-cell hm-val" style="--i:4;background:#d3abb3;color:#14181F" title="Monday afternoon, S5: DDRI 32.2">32.2</div><div class="hm-cell hm-val" style="--i:5;background:#727dca;color:#fff" title="Monday afternoon, S6: DDRI 19.3">19.3</div><div class="hm-cell hm-val" style="--i:6;background:#d2a0aa;color:#14181F" title="Monday afternoon, S7: DDRI 32.9">32.9</div><div class="hm-cell hm-val" style="--i:7;background:#c56073;color:#fff" title="Monday afternoon, S8: DDRI 37.2">37.2</div><div class="hm-cell hm-row">Tue</div><div class="hm-cell hm-val" style="--i:8;background:#d9c7cb;color:#14181F" title="Tuesday afternoon, S1: DDRI 30.3">30.3</div><div class="hm-cell hm-val" style="--i:9;background:#d5b5bb;color:#14181F" title="Tuesday afternoon, S2: DDRI 31.5">31.5</div><div class="hm-cell hm-val" style="--i:10;background:#d8c3c7;color:#14181F" title="Tuesday afternoon, S3: DDRI 30.6">30.6</div><div class="hm-cell hm-val" style="--i:11;background:#6773c8;color:#fff" title="Tuesday afternoon, S4: DDRI 18.3">18.3</div><div class="hm-cell hm-val" style="--i:12;background:#d8c1c6;color:#14181F" title="Tuesday afternoon, S5: DDRI 30.7">30.7</div><div class="hm-cell hm-val" style="--i:13;background:#7e88cc;color:#fff" title="Tuesday afternoon, S6: DDRI 20.4">20.4</div><div class="hm-cell hm-val" style="--i:14;background:#d4aeb5;color:#14181F" title="Tuesday afternoon, S7: DDRI 32.0">32.0</div><div class="hm-cell hm-val" style="--i:15;background:#bd314c;color:#fff" title="Tuesday afternoon, S8: DDRI 40.3">40.3</div><div class="hm-cell hm-row">Wed</div><div class="hm-cell hm-val" style="--i:16;background:#929ad0;color:#14181F" title="Wednesday afternoon, S1: DDRI 22.2">22.2</div><div class="hm-cell hm-val" style="--i:17;background:#c66175;color:#fff" title="Wednesday afternoon, S2: DDRI 37.1">37.1</div><div class="hm-cell hm-val" style="--i:18;background:#c66477;color:#fff" title="Wednesday afternoon, S3: DDRI 36.9">36.9</div><div class="hm-cell hm-val" style="--i:19;background:#969dd0;color:#14181F" title="Wednesday afternoon, S4: DDRI 22.5">22.5</div><div class="hm-cell hm-val" style="--i:20;background:#d19da7;color:#14181F" title="Wednesday afternoon, S5: DDRI 33.1">33.1</div><div class="hm-cell hm-val" style="--i:21;background:#d8c3c7;color:#14181F" title="Wednesday afternoon, S6: DDRI 30.6">30.6</div><div class="hm-cell hm-val" style="--i:22;background:#d5d5db;color:#14181F" title="Wednesday afternoon, S7: DDRI 28.1">28.1</div><div class="hm-cell hm-val" style="--i:23;background:#b40426;color:#fff" title="Wednesday afternoon, S8: DDRI 43.3">43.3</div><div class="hm-cell hm-row">Thu</div><div class="hm-cell hm-val" style="--i:24;background:#dddbdb;color:#14181F" title="Thursday afternoon, S1: DDRI 29.0">29.0</div><div class="hm-cell hm-val" style="--i:25;background:#c7c9d9;color:#14181F" title="Thursday afternoon, S2: DDRI 26.9">26.9</div><div class="hm-cell hm-val" style="--i:26;background:#6773c8;color:#fff" title="Thursday afternoon, S3: DDRI 18.3">18.3</div><div class="hm-cell hm-val" style="--i:27;background:#dcd8d9;color:#14181F" title="Thursday afternoon, S4: DDRI 29.2">29.2</div><div class="hm-cell hm-val" style="--i:28;background:#b3b7d5;color:#14181F" title="Thursday afternoon, S5: DDRI 25.1">25.1</div><div class="hm-cell hm-val" style="--i:29;background:#3b4cc0;color:#fff" title="Thursday afternoon, S6: DDRI 14.4">14.4</div><div class="hm-cell hm-val" style="--i:30;background:#6471c7;color:#fff" title="Thursday afternoon, S7: DDRI 18.1">18.1</div><div class="hm-cell hm-val" style="--i:31;background:#a0a6d2;color:#14181F" title="Thursday afternoon, S8: DDRI 23.4">23.4</div><div class="hm-cell hm-row">Fri</div><div class="hm-cell hm-val" style="--i:32;background:#8d95cf;color:#fff" title="Friday afternoon, S1: DDRI 21.7">21.7</div><div class="hm-cell hm-val" style="--i:33;background:#b2b6d5;color:#14181F" title="Friday afternoon, S2: DDRI 25.0">25.0</div><div class="hm-cell hm-val" style="--i:34;background:#626fc7;color:#fff" title="Friday afternoon, S3: DDRI 17.9">17.9</div><div class="hm-cell hm-val" style="--i:35;background:#b2b6d5;color:#14181F" title="Friday afternoon, S4: DDRI 25.0">25.0</div><div class="hm-cell hm-val" style="--i:36;background:#dbd0d2;color:#14181F" title="Friday afternoon, S5: DDRI 29.7">29.7</div><div class="hm-cell hm-val" style="--i:37;background:#858ecd;color:#fff" title="Friday afternoon, S6: DDRI 21.0">21.0</div><div class="hm-cell hm-val" style="--i:38;background:#9098cf;color:#14181F" title="Friday afternoon, S7: DDRI 22.0">22.0</div><div class="hm-cell hm-val" style="--i:39;background:#c4586d;color:#fff" title="Friday afternoon, S8: DDRI 37.7">37.7</div></div><div class="hm-legend"><span>Lower</span><div class="hm-bar"></div><span>Higher distraction</span></div></div>
-    </div>
-    <div class="pull rv"><div class="n">71.2</div><p>The single highest reading came at <strong>S6 (Parkside)</strong> on a Monday morning — nearly double the next-highest zone. Afternoons tell a different story, with <strong>S8 (Sugar Creek)</strong> running highest all week.</p></div>
-    <div class="data-grid">
-      <div class="data-block rv" style="--i:0"><h3>Morning drop-off — by the numbers</h3><div class="cap">Descriptive statistics of DDRI at each zone. Highlights mark the standout figures.</div><div class="tablewrap" style="border:none"><table class="stat-table"><thead><tr><th>Zone</th><th>Mean</th><th>Std&nbsp;Dev</th><th>Min</th><th>Max</th></tr></thead><tbody><tr><th scope="row">S1</th><td class="">32.46</td><td class="">4.61</td><td class="">28.25</td><td class="">38.61</td></tr><tr><th scope="row">S2</th><td class="">26.68</td><td class="">3.12</td><td class="">23.91</td><td class="">31.76</td></tr><tr><th scope="row">S3</th><td class="">30.42</td><td class="">2.55</td><td class="">26.17</td><td class="">32.82</td></tr><tr><th scope="row">S4</th><td class="">32.65</td><td class="">5.30</td><td class="">26.10</td><td class="">40.03</td></tr><tr><th scope="row">S5</th><td class="">25.65</td><td class="">5.50</td><td class="">19.01</td><td class="">34.31</td></tr><tr><th scope="row">S6</th><td class="stat-hl">39.92</td><td class="stat-hl">19.14</td><td class="stat-hl">21.98</td><td class="stat-hl">71.20</td></tr><tr><th scope="row">S7</th><td class="">29.54</td><td class="">7.65</td><td class="">21.40</td><td class="">41.11</td></tr><tr><th scope="row">S8</th><td class="">19.19</td><td class="">3.81</td><td class="">15.33</td><td class="">24.93</td></tr></tbody></table></div></div>
-      <div class="data-block rv" style="--i:1"><h3>Afternoon pick-up — by the numbers</h3><div class="cap">Descriptive statistics of DDRI at each zone. Highlights mark the standout figures.</div><div class="tablewrap" style="border:none"><table class="stat-table"><thead><tr><th>Zone</th><th>Mean</th><th>Std&nbsp;Dev</th><th>Min</th><th>Max</th></tr></thead><tbody><tr><th scope="row">S1</th><td class="">24.48</td><td class="">4.84</td><td class="">19.32</td><td class="">30.26</td></tr><tr><th scope="row">S2</th><td class="">28.16</td><td class="">6.40</td><td class="">20.30</td><td class="">37.06</td></tr><tr><th scope="row">S3</th><td class="">25.99</td><td class="stat-hl">8.15</td><td class="">17.88</td><td class="">36.95</td></tr><tr><th scope="row">S4</th><td class="">23.96</td><td class="">3.96</td><td class="">18.35</td><td class="">29.19</td></tr><tr><th scope="row">S5</th><td class="">30.16</td><td class="">3.14</td><td class="stat-hl">25.06</td><td class="">33.12</td></tr><tr><th scope="row">S6</th><td class="">21.13</td><td class="">5.91</td><td class="">14.40</td><td class="">30.64</td></tr><tr><th scope="row">S7</th><td class="">26.61</td><td class="">6.42</td><td class="">18.12</td><td class="">32.89</td></tr><tr><th scope="row">S8</th><td class="stat-hl">36.40</td><td class="">7.65</td><td class="">23.43</td><td class="stat-hl">43.32</td></tr></tbody></table></div></div>
-    </div>
-    <p class="note rv">Observers count two behavior types in each 30-minute window: <strong>A</strong> — phone-use activities, and <strong>B</strong> — distraction without a phone, such as eating, talking, or adjusting in-car controls.</p>
-  </div>
-</section>
-
-<section id="privacy">
-  <div class="wrap">
-    <span class="eyebrow rv">Privacy &amp; ethics</span>
-    <h2 class="rv">What we collect — and what we never will</h2>
-    <p class="lead rv">This study is built to protect the people it observes. It records patterns, not people.</p>
-    <ul class="pledge">
-      <li class="rv l" style="--i:0"><span class="ic">✓</span><p><strong>Only counts and percentages are recorded.</strong> No identifiable driver or student information is ever captured.</p></li>
-      <li class="rv l" style="--i:1"><span class="ic">✓</span><p><strong>Nothing is shared for enforcement.</strong> No individual data is shared with law enforcement or any outside organization.</p></li>
-      <li class="rv l" style="--i:2"><span class="ic">✓</span><p><strong>The only response is a sign.</strong> No citations and no penalties follow from observed behavior — the sole action is displaying <em>Phones Down</em>.</p></li>
-      <li class="rv l" style="--i:3"><span class="ic">✓</span><p><strong>ISU manages all the data.</strong> Data is collected, stored, and analyzed by Illinois State University alone.</p></li>
-      <li class="rv l" style="--i:4"><span class="ic">✓</span><p><strong>It follows established standards.</strong> The study meets ISU IRB requirements, IIHS ethical standards, and the NHTSA NOPUS observation protocol.</p></li>
-    </ul>
   </div>
 </section>
 
 <section id="timeline" class="alt">
   <div class="wrap">
     <span class="eyebrow rv">Timeline</span>
-    <h2 class="rv">Project schedule (tentative)</h2>
+    <h2 class="rv">Project timeline (dates may change)</h2>
     <div class="timeline">
       <div class="tl-car" aria-hidden="true"><svg viewBox="0 0 24 32" width="24" height="32"><defs><linearGradient id="tlcarbody" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F0424E"/><stop offset=".5" stop-color="#D81E2C"/><stop offset="1" stop-color="#A3121D"/></linearGradient></defs><ellipse cx="12" cy="30" rx="8.5" ry="1.8" fill="#000" opacity=".22"/><path d="M12 1 C17 1 20.5 4 20.5 10 L20.5 22 C20.5 27 17 30.5 12 30.5 C7 30.5 3.5 27 3.5 22 L3.5 10 C3.5 4 7 1 12 1 Z" fill="url(#tlcarbody)" stroke="#7A0F17" stroke-width=".6"/><rect x="1.3" y="10" width="2.6" height="3.2" rx="1" fill="#7A0F17"/><rect x="20.1" y="10" width="2.6" height="3.2" rx="1" fill="#7A0F17"/><rect x="10.6" y="2" width="2.8" height="27" fill="#fff" opacity=".85"/><path d="M7 6 C7 4.5 9 4 12 4 C15 4 17 4.5 17 6 L17 11 C17 12.5 15 13 12 13 C9 13 7 12.5 7 11 Z" fill="#1A1E24"/><path d="M7.5 26 C7.5 27.5 9 28 12 28 C15 28 16.5 27.5 16.5 26 L16.5 21 C16.5 19.5 15 19 12 19 C9 19 7.5 19.5 7.5 21 Z" fill="#1A1E24"/><rect x="9" y="20.3" width="3.6" height="3" rx="1" fill="#8FC5FF" opacity=".55"/><circle cx="7" cy="28.3" r="1.15" fill="#FFE9A8"/><circle cx="17" cy="28.3" r="1.15" fill="#FFE9A8"/><rect x="4.8" y="1.4" width="2.8" height="1.9" rx=".8" fill="#5A0509"/><rect x="16.4" y="1.4" width="2.8" height="1.9" rx=".8" fill="#5A0509"/></svg></div>
-      <div class="phase rv" style="--i:0"><div class="when">Spring – Summer 2026</div><div class="what">Field preparation and coordination</div></div>
-      <div class="phase rv" style="--i:1"><div class="when">Late Sept – early Oct 2026</div><div class="what">Sign intervention begins</div></div>
-      <div class="phase rv" style="--i:2"><div class="when">December 2026</div><div class="what">Data collection completed</div></div>
-      <div class="phase rv" style="--i:3"><div class="when">Early 2027</div><div class="what">Final reporting and recommendations</div></div>
+      <div class="phase rv" style="--i:0"><div class="when">Spring – Summer 2026</div><div class="what">Planning and getting ready</div></div>
+      <div class="phase rv" style="--i:1"><div class="when">Late Sept – early Oct 2026</div><div class="what">Signs go up</div></div>
+      <div class="phase rv" style="--i:2"><div class="when">December 2026</div><div class="what">Data collection ends</div></div>
+      <div class="phase rv" style="--i:3"><div class="when">Early 2027</div><div class="what">Final report is shared</div></div>
     </div>
   </div>
 </section>
@@ -523,9 +757,25 @@ footer .disc{max-width:72ch;margin-top:.9rem;line-height:1.6}
   <div class="wrap">
     <span class="eyebrow rv">Roles</span>
     <h2 class="rv">Who does what</h2>
-    <div class="roles">
-      <div class="card rv" style="--i:0"><h3>What ISU will do</h3><ul><li>Procure, install, and manage the sign systems.</li><li>Train student observers in strict, safe, and unbiased protocols.</li><li>Analyze all data and prepare final reports with recommendations.</li><li>Share the results and findings with partners and the community.</li></ul></div>
-      <div class="card rv" style="--i:1"><h3>What we ask of schools</h3><ul><li>Help keep school operations staff informed of the observation schedule and procedures.</li><li>No direct involvement is required from teachers, students, or families — beyond any routine communications a school chooses to share.</li></ul></div>
+    <p class="rv">Pick a group to see its part.</p>
+    <div class="rtabs rv" role="tablist" aria-label="Choose a group">
+      <button type="button" class="rtab on" role="tab" id="rt-isu" aria-controls="rp-isu" aria-selected="true" tabindex="0" data-role="isu">ISU team</button>
+      <button type="button" class="rtab" role="tab" id="rt-schools" aria-controls="rp-schools" aria-selected="false" tabindex="-1" data-role="schools">Unit 5 schools</button>
+      <button type="button" class="rtab" role="tab" id="rt-drivers" aria-controls="rp-drivers" aria-selected="false" tabindex="-1" data-role="drivers">Drivers</button>
+    </div>
+    <div class="rpanels rv">
+      <div class="rpanel on" role="tabpanel" id="rp-isu" aria-labelledby="rt-isu">
+        <div class="rp-head"><div class="rp-ic"><svg viewBox="0 0 30 30" aria-hidden="true"><path d="M4 12 L15 6 L26 12 L15 18 Z" fill="none" stroke="#D81E2C" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 15 V21 C12 23.5 18 23.5 21 21 V15" fill="none" stroke="#D81E2C" stroke-width="2.2"/></svg></div><div><h3>What the ISU team does</h3><p>Runs the study from start to finish.</p></div></div>
+        <div class="rp-tiles"><div class="rp-tile"><span class="rt-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="10" rx="2" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="13" x2="12" y2="21" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Puts up the signs</span></div><div class="rp-tile"><span class="rt-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Trains the observers</span></div><div class="rp-tile"><span class="rt-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="20" x2="20" y2="20" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="6" y="12" width="3" height="6" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="11" y="8" width="3" height="10" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="16" y="5" width="3" height="13" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Studies the results</span></div><div class="rp-tile"><span class="rt-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="2.5" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="6" r="2.5" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="18" r="2.5" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="8.3" y1="10.8" x2="15.7" y2="7.2" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="8.3" y1="13.2" x2="15.7" y2="16.8" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Shares what we learn</span></div></div>
+      </div>
+      <div class="rpanel" role="tabpanel" id="rp-schools" aria-labelledby="rt-schools">
+        <div class="rp-head"><div class="rp-ic"><svg viewBox="0 0 30 30" aria-hidden="true"><rect x="5" y="12" width="20" height="14" fill="none" stroke="#D81E2C" stroke-width="2.2"/><path d="M3 13 L15 5 L27 13" fill="none" stroke="#D81E2C" stroke-width="2.2" stroke-linejoin="round"/><rect x="12.5" y="18" width="5" height="8" fill="#D81E2C"/></svg></div><div><h3>What we ask of schools</h3><p>Very little. The study happens on the road.</p></div></div>
+        <div class="rp-tiles"><div class="rp-tile"><span class="rt-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 20.5a2 2 0 0 0 4 0" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Let office staff know when observers come</span></div><div class="rp-tile"><span class="rt-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 12.5l2.7 2.7L16 9.8" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Nothing for teachers or students to do</span></div></div>
+      </div>
+      <div class="rpanel" role="tabpanel" id="rp-drivers" aria-labelledby="rt-drivers">
+        <div class="rp-head"><div class="rp-ic"><svg viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="15" r="11" fill="none" stroke="#D81E2C" stroke-width="2.2"/><circle cx="15" cy="15" r="3" fill="none" stroke="#D81E2C" stroke-width="2.2"/><path d="M4.5 13.5 L12 14.5 M25.5 13.5 L18 14.5 M15 18 L15 26" fill="none" stroke="#D81E2C" stroke-width="2.2" stroke-linecap="round"/></svg></div><div><h3>What this means for drivers</h3><p>Nothing changes for you.</p></div></div>
+        <div class="rp-tiles"><div class="rp-tile"><span class="rt-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="9" y1="9" x2="15" y2="15" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="15" y1="9" x2="9" y2="15" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Nothing to sign up for</span></div><div class="rp-tile"><span class="rt-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 12.5l2.7 2.7L16 9.8" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Nothing to do differently</span></div><div class="rp-tile"><span class="rt-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7.5" y="2.5" width="9" height="19" rx="2.2" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 21 L21 3" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>See the sign? Phone down.</span></div></div>
+      </div>
     </div>
   </div>
 </section>
@@ -534,7 +784,6 @@ footer .disc{max-width:72ch;margin-top:.9rem;line-height:1.6}
   <div class="wrap">
     <span class="eyebrow rv">Partners</span>
     <h2 class="rv">Who is involved</h2>
-    <p class="rv">University researchers, town government, local schools, and safety-technology providers.</p>
     <div class="orgs">
       <div class="org rv" style="--i:0"><div class="nm">Illinois State University</div><div class="rl">Research lead and data steward</div></div>
       <div class="org rv" style="--i:1"><div class="nm">Town of Normal</div><div class="rl">Roadway and community partner</div></div>
@@ -542,15 +791,14 @@ footer .disc{max-width:72ch;margin-top:.9rem;line-height:1.6}
       <div class="org rv" style="--i:3"><div class="nm">Safer Street</div><div class="rl">Signage technology provider</div></div>
       <div class="org rv" style="--i:4"><div class="nm">CMT / StreetVision</div><div class="rl">Signage technology provider</div></div>
     </div>
-    <p class="note rv">Individual stakeholder contacts are listed only with each person's consent. Organizations are shown here to reflect the partnership.</p>
   </div>
 </section>
 
 <section id="contact">
   <div class="wrap">
     <span class="eyebrow rv">Contact</span>
-    <h2 class="rv">Questions about the study?</h2>
-    <p class="rv">Reach the research team at Illinois State University.</p>
+    <h2 class="rv">Have a question?</h2>
+    <p class="rv">Reach out to the research team at Illinois State University.</p>
     <div class="contact-strip rv">
       <div class="cx"><div class="nm">Dr. Haiyan Sally Xie, P.E.</div><div class="rl">Project Investigator &amp; Research Supervisor</div><a href="mailto:hxie@ilstu.edu">hxie@ilstu.edu</a></div>
       <div class="cx"><div class="nm">Tej Kamal Davuluri</div><div class="rl">Graduate Research Assistant</div><a href="mailto:tdavulu@ilstu.edu">tdavulu@ilstu.edu</a></div>
@@ -562,7 +810,7 @@ footer .disc{max-width:72ch;margin-top:.9rem;line-height:1.6}
   <div class="wrap">
     <div class="ft-title">Distracted Driving Identification and Mitigation</div>
     <div>Illinois State University · Town of Normal</div>
-    <p class="disc">This site is informational and part of an IRB-approved research study (ISU IRB-2026-238). The study records only anonymized counts of driving behavior; no identifiable driver or student information is collected, and no data is shared with law enforcement or any outside organization.</p>
+    <p class="disc">This site shares information about a research study approved by Illinois State University (IRB-2026-238). The study only counts driving behavior. It does not collect any information that could identify a driver or student, and nothing is shared with the police or other groups.</p>
   </div>
 </footer>
 
@@ -605,10 +853,7 @@ footer .disc{max-width:72ch;margin-top:.9rem;line-height:1.6}
     counters.set(el,(counters.get(el)||0)+1); // invalidate any running animation
     el.textContent=(0).toFixed(dec);
   }
-  var nav=[].slice.call(document.querySelectorAll('.nav-links a'));
   if('IntersectionObserver' in window){
-    var spy=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var id=e.target.getAttribute('id');nav.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+id);});}});},{rootMargin:'-45% 0px -50% 0px'});
-    [].slice.call(document.querySelectorAll('section[id]')).forEach(function(s){spy.observe(s);});
 
     // Reveals replay every time: enter view -> animate in, leave view (either direction) -> reset, so scrolling
     // back up reverses them and scrolling down to them again replays them.
@@ -629,6 +874,87 @@ footer .disc{max-width:72ch;margin-top:.9rem;line-height:1.6}
     document.querySelectorAll('.rv').forEach(function(el){el.classList.add('in');});
     document.querySelectorAll('[data-count]').forEach(countUp);
   }
+
+  // Menu: highlight the section you are reading. It is worked out from real positions on every
+  // scroll frame, so it can never get stuck. A red bar slides to the active menu item.
+  var navA=[].slice.call(document.querySelectorAll('.nav-links a'));
+  var navInd=document.querySelector('.nav-ind');
+  var spySecs=navA.map(function(a){return document.querySelector(a.getAttribute('href'));}).filter(Boolean);
+  var navLock=null,lockTimer=null,curId=null;
+  function moveInd(a){
+    if(!navInd)return;
+    if(!a||getComputedStyle(navInd).display==='none'){navInd.classList.remove('show');return;}
+    navInd.style.width=a.offsetWidth+'px';
+    navInd.style.transform='translateX('+a.offsetLeft+'px)';
+    navInd.classList.add('show');
+  }
+  function setActive(id){
+    if(id===curId)return;
+    curId=id;
+    var act=null;
+    navA.forEach(function(a){
+      var on=a.getAttribute('href')==='#'+id;
+      a.classList.toggle('active',on);
+      if(on){act=a;a.setAttribute('aria-current','true');}else{a.removeAttribute('aria-current');}
+    });
+    moveInd(act);
+  }
+  function spyNow(){
+    if(navLock)return;
+    var hdr=document.querySelector('header.nav');
+    var line=(hdr?hdr.offsetHeight:60)+window.innerHeight*0.3;
+    var id=null;
+    spySecs.forEach(function(s){if(s.getBoundingClientRect().top<=line)id=s.id;});
+    var doc=document.documentElement;
+    if(spySecs.length&&window.innerHeight+window.scrollY>=doc.scrollHeight-4)id=spySecs[spySecs.length-1].id;
+    setActive(id);
+  }
+  function releaseLock(delay){clearTimeout(lockTimer);lockTimer=setTimeout(function(){navLock=null;spyNow();},delay);}
+  navA.forEach(function(a){
+    a.addEventListener('click',function(){
+      navLock=null;
+      setActive(a.getAttribute('href').slice(1));
+      navLock=true;
+      releaseLock(1200);
+    });
+  });
+  var spyTick=false;
+  window.addEventListener('scroll',function(){
+    if(navLock)releaseLock(180);
+    if(!spyTick){spyTick=true;requestAnimationFrame(function(){spyTick=false;spyNow();});}
+  },{passive:true});
+  window.addEventListener('resize',function(){moveInd(document.querySelector('.nav-links a.active'));spyNow();});
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){moveInd(document.querySelector('.nav-links a.active'));});}
+  spyNow();
+
+  // What to expect: picture numbers and tabs pick which card shows
+  var xpBtns=[].slice.call(document.querySelectorAll('[data-xp]'));
+  function setXP(k){
+    xpBtns.forEach(function(b){var on=b.getAttribute('data-xp')===k;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');});
+    [].slice.call(document.querySelectorAll('.xp-panel')).forEach(function(p){p.classList.toggle('on',p.id==='xp-'+k);});
+  }
+  xpBtns.forEach(function(b){b.addEventListener('click',function(){setXP(b.getAttribute('data-xp'));});});
+
+  // Privacy: flip cards
+  var flips=[].slice.call(document.querySelectorAll('.flip'));
+  var flipAll=document.querySelector('.flip-all');
+  function allOpen(){return flips.length&&flips.every(function(f){return f.classList.contains('on');});}
+  function syncFlipAll(){if(flipAll)flipAll.textContent=allOpen()?'Hide answers':'Show all answers';}
+  flips.forEach(function(f){f.addEventListener('click',function(){var on=f.classList.toggle('on');f.setAttribute('aria-pressed',on?'true':'false');syncFlipAll();});});
+  if(flipAll){flipAll.addEventListener('click',function(){var open=!allOpen();flips.forEach(function(f){f.classList.toggle('on',open);f.setAttribute('aria-pressed',open?'true':'false');});syncFlipAll();});}
+
+  // Roles: tabs
+  var rtabs=[].slice.call(document.querySelectorAll('.rtab'));
+  function setRole(k,focus){
+    rtabs.forEach(function(t){var on=t.getAttribute('data-role')===k;t.classList.toggle('on',on);t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1;if(on&&focus)t.focus();});
+    [].slice.call(document.querySelectorAll('.rpanel')).forEach(function(p){p.classList.toggle('on',p.id==='rp-'+k);});
+  }
+  rtabs.forEach(function(t,i){
+    t.addEventListener('click',function(){setRole(t.getAttribute('data-role'));});
+    t.addEventListener('keydown',function(e){
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();var n=rtabs[(i+(e.key==='ArrowRight'?1:rtabs.length-1))%rtabs.length];setRole(n.getAttribute('data-role'),true);}
+    });
+  });
 
   // Timeline: the car travels down the line in the same motion as the red line drawing --
   // both triggered together by the same "in view" state, so they move as one unit and
